@@ -26,7 +26,6 @@
 
         body {
             font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-            /* Prachtige waterval en natuur achtergrond in stijl van je afbeelding */
             background: url('https://images.unsplash.com/photo-1434725039720-aaad6dd32dfe?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
             background-size: cover;
             color: var(--text-primary);
@@ -38,7 +37,6 @@
             position: relative;
         }
 
-        /* Lichte sfeervolle overlay zodat de glazen kaarten er glashelder op afsteken */
         body::before {
             content: '';
             position: absolute;
@@ -70,6 +68,65 @@
             border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
+        :root[data-theme="violet"] {
+            --accent: #a78bfa;
+            --accent-hover: #8b5cf6;
+            --accent-glow: rgba(167, 139, 250, 0.4);
+        }
+
+        :root[data-theme="emerald"] {
+            --accent: #34d399;
+            --accent-hover: #10b981;
+            --accent-glow: rgba(52, 211, 153, 0.4);
+        }
+
+        :root[data-theme="rose"] {
+            --accent: #fb7185;
+            --accent-hover: #f43f5e;
+            --accent-glow: rgba(251, 113, 133, 0.4);
+        }
+
+        :root[data-theme="light"] {
+            --text-primary: #172033;
+            --text-secondary: #475569;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --accent-glow: rgba(37, 99, 235, 0.2);
+        }
+
+        :root[data-theme="light"] body::before {
+            background: linear-gradient(135deg, rgba(226, 236, 250, 0.72), rgba(241, 245, 249, 0.68));
+        }
+
+        :root[data-theme="light"] .portal-card,
+        :root[data-theme="light"] .dashboard-container {
+            background: rgba(248, 250, 252, 0.9);
+            border-color: rgba(51, 65, 85, 0.2);
+        }
+
+        :root[data-theme="light"] .widget-card,
+        :root[data-theme="light"] .stat-card,
+        :root[data-theme="light"] .nav-item {
+            background: rgba(226, 232, 240, 0.75);
+            border-color: rgba(51, 65, 85, 0.12);
+        }
+
+        :root[data-theme="light"] textarea,
+        :root[data-theme="light"] .todo-input-group input,
+        :root[data-theme="light"] .dashboard-form input,
+        :root[data-theme="light"] .dashboard-form select,
+        :root[data-theme="light"] .settings-select,
+        :root[data-theme="light"] .todo-item,
+        :root[data-theme="light"] .news-item,
+        :root[data-theme="light"] .admin-email-list li {
+            background: rgba(255, 255, 255, 0.82);
+            border-color: rgba(51, 65, 85, 0.18);
+        }
+
+        :root[data-theme="light"] .focus-clock::before { background: #f1f5f9; }
+        :root[data-theme="light"] .time-badge { background: rgba(255, 255, 255, 0.7); }
+        :root[data-theme="light"] .todo-item.completed span { color: #64748b; }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(15px) scale(0.98); }
             to { opacity: 1; transform: translateY(0) scale(1); }
@@ -96,6 +153,11 @@
         }
 
         .header h1 i { color: var(--accent); }
+
+        .page-navigation { display: flex; gap: 10px; margin-bottom: 20px; }
+        .page-navigation button { width: auto; padding: 10px 16px; background: rgba(255, 255, 255, 0.08); box-shadow: none; }
+        .page-navigation button[aria-current="page"] { background: var(--accent); box-shadow: 0 4px 12px var(--accent-glow); }
+        .page-navigation button:hover { transform: translateY(-1px); }
 
         .time-badge {
             background: rgba(0, 0, 0, 0.3);
@@ -211,6 +273,75 @@
             padding: 20px;
         }
 
+        .welcome-panel {
+            margin-bottom: 16px;
+            padding: 20px 22px;
+            border-radius: 12px;
+            background: linear-gradient(120deg, var(--accent-glow), rgba(30, 41, 59, 0.65));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .welcome-panel h2 { font-size: 1.5rem; margin-bottom: 4px; }
+        .welcome-panel p { color: var(--text-secondary); font-size: 0.9rem; }
+        .quote-panel { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; }
+        .quote-panel > i { color: var(--accent); font-size: 1.5rem; }
+        .quote-panel blockquote { font-size: 0.95rem; font-style: italic; }
+        .quote-panel p { color: var(--text-secondary); font-size: 0.8rem; margin-top: 5px; }
+
+        .dashboard-form {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .dashboard-form input,
+        .dashboard-form select {
+            min-width: 0;
+            flex: 1 1 140px;
+            padding: 10px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 8px;
+            background: rgba(15, 23, 42, 0.5);
+            color: var(--text-primary);
+            font: inherit;
+        }
+
+        .dashboard-form select option { color: #172033; }
+        .dashboard-form button { width: auto; padding: 10px 14px; font-size: 0.85rem; }
+        .settings-select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 8px;
+            background: rgba(15, 23, 42, 0.5);
+            color: var(--text-primary);
+            font: inherit;
+        }
+        .settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+        .settings-label { display: block; margin-bottom: 6px; color: var(--text-secondary); font-size: 0.85rem; }
+        .widget-hint { color: var(--text-secondary); font-size: 0.8rem; margin-top: 8px; }
+        .daily-progress { margin: 12px 0; }
+        .daily-progress-label { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 6px; color: var(--text-secondary); font-size: 0.8rem; }
+        .daily-progress-track { height: 8px; overflow: hidden; border-radius: 999px; background: rgba(255, 255, 255, 0.12); }
+        .daily-progress-fill { height: 100%; width: 0; border-radius: inherit; background: var(--accent); transition: width 0.25s ease; }
+        .quick-link-anchor { display: flex; align-items: flex-start; gap: 14px; flex: 1; min-width: 0; color: var(--text-primary); text-decoration: none; }
+        .quick-link-delete { flex: 0 0 auto; width: auto; padding: 5px 7px; background: transparent; color: var(--danger); box-shadow: none; }
+        .quick-link-delete:hover { background: var(--danger); transform: none; }
+        .todo-toggle { flex: 0 0 auto; width: 16px; height: 16px; accent-color: var(--accent); }
+        .todo-item > span { flex: 1; overflow-wrap: anywhere; }
+        .event-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; list-style: none; }
+        .event-item { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 9px 11px; border-radius: 7px; background: rgba(15, 23, 42, 0.45); }
+        .event-info { min-width: 0; }
+        .event-info strong { display: block; overflow-wrap: anywhere; font-size: 0.88rem; }
+        .event-info span { color: var(--text-secondary); font-size: 0.78rem; }
+        .event-delete { flex: 0 0 auto; width: auto; padding: 6px 8px; background: transparent; color: var(--danger); box-shadow: none; }
+        .event-delete:hover { background: var(--danger); transform: none; }
+        .music-frame { width: 100%; min-height: 152px; margin-top: 12px; border: 0; border-radius: 10px; background: rgba(0, 0, 0, 0.2); }
+        .music-open-link { display: inline-flex; margin-top: 12px; color: var(--accent); font-size: 0.9rem; }
+        .settings-grid + .widget-hint { margin-top: 14px; }
+
         textarea {
             width: 100%;
             height: 100px;
@@ -272,14 +403,14 @@
         .input-group { position: relative; margin-bottom: 20px; }
         .input-group i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
 
-        input[type="password"] {
+        input[type="email"] {
             width: 100%; padding: 14px 16px 14px 44px; background: rgba(15, 23, 42, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 10px;
             color: var(--text-primary); font-size: 0.95rem; outline: none;
             transition: all 0.2s ease;
         }
 
-        input[type="password"]:focus {
+        input[type="email"]:focus {
             border-color: var(--accent);
             box-shadow: 0 0 12px var(--accent-glow);
         }
@@ -297,30 +428,63 @@
         .btn-logout { background-color: transparent; border: 1px solid rgba(255, 255, 255, 0.2); color: var(--text-secondary); width: auto; padding: 8px 16px; box-shadow: none; }
         .btn-logout:hover { background-color: var(--danger); border-color: var(--danger); color: white; transform: none; box-shadow: none; }
         .error-message { color: #fca5a5; font-size: 0.85rem; margin-top: 12px; text-align: center; }
+        .admin-email-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+        .admin-email-list li { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 8px 12px; background: rgba(15, 23, 42, 0.5); border-radius: 6px; overflow-wrap: anywhere; }
+        .admin-email-list button { width: auto; padding: 6px 10px; background: transparent; color: var(--danger); box-shadow: none; }
+        .admin-email-list button:hover { background: var(--danger); color: white; transform: none; }
+        .admin-status { color: var(--text-secondary); font-size: 0.85rem; margin-top: 10px; }
+        .todo-input-group input[type="email"] { padding: 10px 12px; }
+        .focus-clock {
+            --timer-progress: 100%;
+            width: 150px;
+            height: 150px;
+            margin: 18px auto;
+            border-radius: 50%;
+            background: conic-gradient(from -90deg, var(--accent) var(--timer-progress), rgba(255, 255, 255, 0.1) var(--timer-progress));
+            display: grid;
+            place-items: center;
+            position: relative;
+        }
+        .focus-clock::before { content: ''; position: absolute; inset: 8px; border-radius: 50%; background: #172235; }
+        .focus-time { position: relative; font-size: 2rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+        .focus-modes { display: flex; gap: 8px; }
+        .focus-modes button, .focus-actions button { padding: 10px; font-size: 0.85rem; }
+        .focus-modes button { background: rgba(255, 255, 255, 0.08); box-shadow: none; }
+        .focus-modes button[aria-pressed="true"] { background: var(--accent); }
+        .focus-actions { display: flex; gap: 8px; }
+        .focus-actions button:last-child { background: rgba(255, 255, 255, 0.08); box-shadow: none; }
+        .focus-status { min-height: 1.25em; margin-top: 12px; text-align: center; color: var(--text-secondary); font-size: 0.85rem; }
         .status-dot { width: 8px; height: 8px; background-color: var(--success); border-radius: 50%; display: inline-block; box-shadow: 0 0 8px var(--success); }
         .hidden { display: none !important; }
+
+        @media (max-width: 540px) {
+            .dashboard-container { padding: 24px 18px; }
+            .dashboard-form button { width: 100%; }
+            .header { align-items: flex-start; }
+            .header > div { flex-wrap: wrap; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- INLOGSCHERM -->
+    <!-- INLOGSCHERM (E-MAILCHECK) -->
     <div id="loginScreen" class="portal-card">
         <div style="text-align: center; margin-bottom: 28px;">
-            <i class="fa-solid fa-water" style="font-size: 3rem; color: var(--accent); margin-bottom: 14px; filter: drop-shadow(0 0 10px var(--accent-glow));"></i>
-            <h2 style="font-size: 1.6rem; font-weight: 600; letter-spacing: 0.3px;">Enterprise Portal</h2>
-            <p style="color: var(--text-secondary); font-size: 0.88rem; margin-top: 6px;">Voer uw toegangscode in om te starten.</p>
+            <i class="fa-solid fa-envelope-circle-check" style="font-size: 3rem; color: var(--accent); margin-bottom: 14px; filter: drop-shadow(0 0 10px var(--accent-glow));"></i>
+            <h2 style="font-size: 1.6rem; font-weight: 600; letter-spacing: 0.3px;">Toegang Verifiëren</h2>
+            <p style="color: var(--text-secondary); font-size: 0.88rem; margin-top: 6px;">Log veilig in met een link die we naar uw e-mailadres sturen.</p>
         </div>
         
         <form id="loginForm">
             <div class="input-group">
-                <i class="fa-solid fa-lock"></i>
-                <input type="password" id="passwordInput" placeholder="Wachtwoord" required>
+                <i class="fa-solid fa-at"></i>
+                <input type="email" id="emailInput" placeholder="jouw@email.nl" autocomplete="email" required>
             </div>
             <button type="submit">
-                <i class="fa-solid fa-right-to-bracket"></i> Inloggen
+                <i class="fa-solid fa-right-to-bracket"></i> Stuur inloglink
             </button>
         </form>
-        <div id="errorMsg" class="error-message"></div>
+        <div id="loginMessage" class="error-message" role="status" aria-live="polite"></div>
     </div>
 
     <!-- DASHBOARD -->
@@ -333,6 +497,25 @@
                 <button class="btn-logout" id="logoutBtn"><i class="fa-solid fa-power-off"></i> Uitloggen</button>
             </div>
         </div>
+
+        <nav id="pageNavigation" class="page-navigation hidden" aria-label="Hoofdnavigatie">
+            <button id="dashboardPageButton" type="button" aria-current="page"><i class="fa-solid fa-house"></i> Dashboard</button>
+            <button id="adminPageButton" class="hidden" type="button"><i class="fa-solid fa-user-shield"></i> E-mailbeheer</button>
+        </nav>
+
+        <section id="dashboardPage">
+        <section class="welcome-panel" aria-live="polite">
+            <h2 id="welcomeGreeting">Welkom!</h2>
+            <p id="todayDate"></p>
+        </section>
+
+        <section class="widget-card quote-panel" aria-label="Quote van de dag">
+            <i class="fa-solid fa-quote-left" aria-hidden="true"></i>
+            <div>
+                <blockquote id="dailyQuote"></blockquote>
+                <p id="dailyQuoteAuthor"></p>
+            </div>
+        </section>
 
         <!-- Live Stats (Weer + Systeem) -->
         <div class="stats-grid">
@@ -361,29 +544,12 @@
 
         <!-- Links Grid -->
         <div class="section-title"><i class="fa-solid fa-compass"></i> Snelle Systeemkoppelingen</div>
-        <div class="nav-grid">
-            <a href="https://nos.nl" target="_blank" class="nav-item">
-                <i class="fa-solid fa-globe"></i>
-                <div class="nav-content">
-                    <span class="nav-title">NOS Nieuws</span>
-                    <span class="nav-desc">Laatste nieuws & uitzendingen</span>
-                </div>
-            </a>
-            <a href="https://github.com/twand010306/mywebsite" target="_blank" class="nav-item">
-                <i class="fa-brands fa-github"></i>
-                <div class="nav-content">
-                    <span class="nav-title">GitHub Repository</span>
-                    <span class="nav-desc">Beheer de broncode van deze site</span>
-                </div>
-            </a>
-            <a href="https://youtube.com" target="_blank" class="nav-item">
-                <i class="fa-brands fa-youtube"></i>
-                <div class="nav-content">
-                    <span class="nav-title">YouTube</span>
-                    <span class="nav-desc">Media & tutorials bekijken</span>
-                </div>
-            </a>
-        </div>
+        <div class="nav-grid" id="quickLinks"></div>
+        <form id="quickLinkForm" class="dashboard-form" aria-label="Snelkoppeling toevoegen">
+            <input id="quickLinkTitle" type="text" maxlength="40" placeholder="Naam van website" aria-label="Naam van website" required>
+            <input id="quickLinkUrl" type="url" placeholder="https://voorbeeld.nl" aria-label="Websiteadres" required>
+            <button type="submit"><i class="fa-solid fa-plus"></i> Link toevoegen</button>
+        </form>
 
         <!-- Widgets Section -->
         <div class="widgets-grid">
@@ -411,6 +577,76 @@
                 </ul>
             </div>
 
+            <!-- Focus timer -->
+            <section class="widget-card" aria-labelledby="focusTitle">
+                <div class="section-title" id="focusTitle"><i class="fa-solid fa-hourglass-half"></i> Focus Timer</div>
+                <div class="focus-modes" role="group" aria-label="Kies een timer">
+                    <button id="focusModeButton" type="button" aria-pressed="true">Focus 25 min</button>
+                    <button id="breakModeButton" type="button" aria-pressed="false">Pauze 5 min</button>
+                </div>
+                <div id="focusClock" class="focus-clock" role="timer" aria-label="Resterende tijd">
+                    <span id="focusTime" class="focus-time">25:00</span>
+                </div>
+                <div class="focus-actions">
+                    <button id="focusStartButton" type="button"><i class="fa-solid fa-play"></i> Start</button>
+                    <button id="focusResetButton" type="button"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+                </div>
+                <p id="focusStatus" class="focus-status" role="status" aria-live="polite">Klaar voor een focusblok.</p>
+            </section>
+
+            <!-- Aankomende afspraken en verjaardagen -->
+            <section class="widget-card" aria-labelledby="eventsTitle">
+                <div class="section-title" id="eventsTitle"><i class="fa-solid fa-calendar-days"></i> Afspraken & verjaardagen</div>
+                <form id="eventForm" class="dashboard-form">
+                    <input id="eventName" type="text" maxlength="60" placeholder="Naam of afspraak" aria-label="Naam of afspraak" required>
+                    <input id="eventDate" type="date" aria-label="Datum" required>
+                    <select id="eventType" aria-label="Soort moment">
+                        <option value="appointment">Afspraak</option>
+                        <option value="birthday">Verjaardag (jaarlijks)</option>
+                    </select>
+                    <button type="submit"><i class="fa-solid fa-plus"></i> Toevoegen</button>
+                </form>
+                <p class="widget-hint">Verjaardagen worden jaarlijks herhaald. Alleen opgeslagen in deze browser.</p>
+                <ul id="eventList" class="event-list"></ul>
+            </section>
+
+            <!-- Persoonlijke muzieklink en speler -->
+            <section class="widget-card" aria-labelledby="musicTitle">
+                <div class="section-title" id="musicTitle"><i class="fa-solid fa-music"></i> Mijn muziek</div>
+                <form id="musicForm" class="dashboard-form">
+                    <input id="musicUrl" type="url" placeholder="Spotify- of YouTube-link" aria-label="Link naar muziek of playlist" required>
+                    <button type="submit"><i class="fa-solid fa-floppy-disk"></i> Opslaan</button>
+                </form>
+                <p id="musicStatus" class="widget-hint" role="status" aria-live="polite">Voeg een Spotify- of YouTube-link toe om hier te luisteren.</p>
+                <iframe id="musicPlayer" class="music-frame hidden" title="Muziekspeler" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                <a id="musicOpenLink" class="music-open-link hidden" target="_blank" rel="noopener noreferrer">Openen in muziek-app <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+            </section>
+
+            <!-- Persoonlijke instellingen -->
+            <section class="widget-card" aria-labelledby="settingsTitle">
+                <div class="section-title" id="settingsTitle"><i class="fa-solid fa-sliders"></i> Jouw dashboard</div>
+                <div class="settings-grid">
+                    <div>
+                        <label class="settings-label" for="displayName">Hoe mogen we je noemen?</label>
+                        <form id="nameForm" class="dashboard-form">
+                            <input id="displayName" type="text" maxlength="40" placeholder="Je naam" aria-label="Je naam">
+                            <button type="submit"><i class="fa-solid fa-check"></i> Opslaan</button>
+                        </form>
+                    </div>
+                    <div>
+                        <label class="settings-label" for="themeSelect">Kleurthema</label>
+                        <select id="themeSelect" aria-label="Kleurthema" class="settings-select">
+                            <option value="blue">Ocean blauw</option>
+                            <option value="violet">Violet</option>
+                            <option value="emerald">Smaragd</option>
+                            <option value="rose">Roze</option>
+                            <option value="light">Licht</option>
+                        </select>
+                    </div>
+                </div>
+                <p id="settingsStatus" class="widget-hint" role="status" aria-live="polite">Je naam en thema worden alleen in deze browser opgeslagen.</p>
+            </section>
+
             <!-- Snelnotities -->
             <div class="widget-card">
                 <div class="section-title" style="margin-bottom: 0;"><i class="fa-solid fa-note-sticky"></i> Snelnotities (Autosave)</div>
@@ -424,55 +660,770 @@
                     <input type="text" id="todoInput" placeholder="Nieuwe taak...">
                     <button id="addTodoBtn"><i class="fa-solid fa-plus"></i></button>
                 </div>
+                <div class="daily-progress" aria-label="Voortgang van taken van vandaag">
+                    <div class="daily-progress-label"><span>Vandaag afgerond</span><span id="todoProgressText">0 / 0</span></div>
+                    <div class="daily-progress-track" role="progressbar" aria-label="Taken vandaag afgerond" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                        <div id="todoProgressFill" class="daily-progress-fill"></div>
+                    </div>
+                </div>
                 <ul id="todoList" class="todo-list"></ul>
             </div>
         </div>
+        </section>
+
+        <section id="adminPage" class="hidden" aria-labelledby="adminTitle">
+            <div class="section-title" id="adminTitle"><i class="fa-solid fa-user-shield"></i> E-mailtoegang beheren</div>
+            <p style="color: var(--text-secondary); font-size: 0.88rem; margin-top: 8px;">Alleen de beheerder kan adressen aan de toegangslijst toevoegen of verwijderen.</p>
+            <form id="addEmailForm" class="todo-input-group">
+                <input type="email" id="newAllowedEmail" placeholder="naam@voorbeeld.nl" autocomplete="email" required>
+                <button type="submit"><i class="fa-solid fa-plus"></i> Toevoegen</button>
+            </form>
+            <ul id="allowedEmailsList" class="admin-email-list"></ul>
+            <p id="adminStatus" class="admin-status" role="status" aria-live="polite"></p>
+        </section>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        const SUPABASE_URL = 'https://ugpdnfyscmvnfbljebus.supabase.co';
+        const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_LDJXifCF-758czFUuY3ZVA_T7RFsQ9k';
+        const ADMIN_EMAIL = 'twan.dieker@gmail.com';
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
         const loginScreen = document.getElementById('loginScreen');
         const mainScreen = document.getElementById('mainScreen');
         const loginForm = document.getElementById('loginForm');
-        const passwordInput = document.getElementById('passwordInput');
-        const errorMsg = document.getElementById('errorMsg');
+        const emailInput = document.getElementById('emailInput');
+        const loginMessage = document.getElementById('loginMessage');
         const logoutBtn = document.getElementById('logoutBtn');
+        const pageNavigation = document.getElementById('pageNavigation');
+        const dashboardPage = document.getElementById('dashboardPage');
+        const adminPage = document.getElementById('adminPage');
+        const dashboardPageButton = document.getElementById('dashboardPageButton');
+        const adminPageButton = document.getElementById('adminPageButton');
+        const addEmailForm = document.getElementById('addEmailForm');
+        const newAllowedEmail = document.getElementById('newAllowedEmail');
+        const allowedEmailsList = document.getElementById('allowedEmailsList');
+        const adminStatus = document.getElementById('adminStatus');
         const clockDisplay = document.getElementById('clockDisplay');
         const notesArea = document.getElementById('notesArea');
         const todoInput = document.getElementById('todoInput');
         const addTodoBtn = document.getElementById('addTodoBtn');
         const todoList = document.getElementById('todoList');
         const newsList = document.getElementById('newsList');
+        const focusClock = document.getElementById('focusClock');
+        const focusTime = document.getElementById('focusTime');
+        const focusStatus = document.getElementById('focusStatus');
+        const focusModeButton = document.getElementById('focusModeButton');
+        const breakModeButton = document.getElementById('breakModeButton');
+        const focusStartButton = document.getElementById('focusStartButton');
+        const focusResetButton = document.getElementById('focusResetButton');
+        const welcomeGreeting = document.getElementById('welcomeGreeting');
+        const todayDate = document.getElementById('todayDate');
+        const dailyQuote = document.getElementById('dailyQuote');
+        const dailyQuoteAuthor = document.getElementById('dailyQuoteAuthor');
+        const quickLinks = document.getElementById('quickLinks');
+        const quickLinkForm = document.getElementById('quickLinkForm');
+        const quickLinkTitle = document.getElementById('quickLinkTitle');
+        const quickLinkUrl = document.getElementById('quickLinkUrl');
+        const eventForm = document.getElementById('eventForm');
+        const eventName = document.getElementById('eventName');
+        const eventDate = document.getElementById('eventDate');
+        const eventType = document.getElementById('eventType');
+        const eventList = document.getElementById('eventList');
+        const musicForm = document.getElementById('musicForm');
+        const musicUrl = document.getElementById('musicUrl');
+        const musicStatus = document.getElementById('musicStatus');
+        const musicPlayer = document.getElementById('musicPlayer');
+        const musicOpenLink = document.getElementById('musicOpenLink');
+        const nameForm = document.getElementById('nameForm');
+        const displayName = document.getElementById('displayName');
+        const themeSelect = document.getElementById('themeSelect');
+        const settingsStatus = document.getElementById('settingsStatus');
+        const todoProgressText = document.getElementById('todoProgressText');
+        const todoProgressFill = document.getElementById('todoProgressFill');
+        const todoProgressTrack = document.querySelector('.daily-progress-track');
 
-        // Check Login State
-        if (sessionStorage.getItem('isAuthenticated') === 'true') { grantAccess(); }
+        const dailyQuotes = [
+            { text: 'Elke stap vooruit telt, hoe klein ook.', author: 'Een herinnering voor vandaag' },
+            { text: 'Begin waar je bent. Gebruik wat je hebt. Doe wat je kunt.', author: 'Een herinnering voor vandaag' },
+            { text: 'Rustig en gestaag kom je ook vooruit.', author: 'Een herinnering voor vandaag' },
+            { text: 'Een nieuw idee begint met nieuwsgierig blijven.', author: 'Een herinnering voor vandaag' },
+            { text: 'Je hoeft niet alles vandaag af te krijgen; begin gewoon ergens.', author: 'Een herinnering voor vandaag' },
+            { text: 'Vooruitgang is belangrijker dan perfectie.', author: 'Een herinnering voor vandaag' },
+            { text: 'Maak vandaag een beetje ruimte voor iets leuks.', author: 'Een herinnering voor vandaag' }
+        ];
+        const defaultQuickLinks = [
+            { title: 'NOS Nieuws', description: 'Laatste nieuws & uitzendingen', url: 'https://nos.nl', icon: 'fa-globe' },
+            { title: 'GitHub Repository', description: 'Beheer de broncode van deze site', url: 'https://github.com/twand010306/mywebsite', icon: 'fa-brands fa-github' },
+            { title: 'YouTube', description: 'Media & tutorials bekijken', url: 'https://youtube.com', icon: 'fa-brands fa-youtube' }
+        ];
+
+        let activeUserId = null;
+        let currentUserEmail = '';
+        let checkingUserId = null;
+        let clockInterval = null;
+        let lastDisplayedDate = '';
+        let focusDuration = 25 * 60;
+        let focusRemaining = focusDuration;
+        let focusDeadline = null;
+        let focusInterval = null;
+
+        localStorage.removeItem('isAuthenticated');
+        sessionStorage.removeItem('isAuthenticated');
 
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            if (passwordInput.value === "geheim123") {
-                sessionStorage.setItem('isAuthenticated', 'true');
-                grantAccess();
-            } else {
-                errorMsg.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> Onjuist wachtwoord. Probeer opnieuw.`;
-                passwordInput.value = "";
+            void requestLoginLink();
+        });
+
+        logoutBtn.addEventListener('click', async function() {
+            try {
+                const { error } = await supabaseClient.auth.signOut();
+                if (error) {
+                    loginMessage.textContent = `Uitloggen is niet gelukt: ${error.message}`;
+                }
+            } catch (error) {
+                loginMessage.textContent = `Uitloggen is niet gelukt: ${error.message}`;
             }
         });
 
-        logoutBtn.addEventListener('click', function() {
-            sessionStorage.removeItem('isAuthenticated');
-            mainScreen.classList.add('hidden');
-            loginScreen.classList.remove('hidden');
-            passwordInput.value = "";
+        addEmailForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            void addAllowedEmail();
         });
 
-        function grantAccess() {
-            loginScreen.classList.add('hidden');
-            mainScreen.classList.remove('hidden');
-            startClock();
-            loadNotes();
-            loadTodos();
-            fetchWeather();
-            fetchRainForecast();
-            fetchNews();
+        dashboardPageButton.addEventListener('click', () => showPage('dashboard'));
+        adminPageButton.addEventListener('click', () => {
+            if (currentUserEmail === ADMIN_EMAIL) {
+                showPage('admin');
+            }
+        });
+
+        focusModeButton.addEventListener('click', () => setFocusMode(25, 'Klaar voor een focusblok.'));
+        breakModeButton.addEventListener('click', () => setFocusMode(5, 'Klaar voor een korte pauze.'));
+        focusStartButton.addEventListener('click', toggleFocusTimer);
+        focusResetButton.addEventListener('click', resetFocusTimer);
+        renderFocusTimer();
+        renderDailyQuote();
+        applySavedTheme();
+
+        nameForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = displayName.value.trim();
+            if (!name) {
+                localStorage.removeItem('dashboard_display_name');
+                settingsStatus.textContent = 'Je standaardnaam wordt weer gebruikt.';
+            } else {
+                localStorage.setItem('dashboard_display_name', name);
+                settingsStatus.textContent = 'Je naam is opgeslagen in deze browser.';
+            }
+            updateWelcome();
+        });
+
+        themeSelect.addEventListener('change', () => {
+            applyTheme(themeSelect.value);
+            localStorage.setItem('dashboard_theme', themeSelect.value);
+            settingsStatus.textContent = 'Je kleurthema is opgeslagen in deze browser.';
+        });
+
+        quickLinkForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            addQuickLink();
+        });
+
+        eventForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            addCalendarEvent();
+        });
+
+        musicForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveMusicLink();
+        });
+
+        supabaseClient.auth.onAuthStateChange((_event, session) => {
+            queueMicrotask(() => {
+                if (session?.user) {
+                    void authorizeUser(session.user);
+                } else {
+                    activeUserId = null;
+                    showLogin();
+                }
+            });
+        });
+
+        void initializeAuth();
+
+        async function initializeAuth() {
+            try {
+                const { data, error } = await supabaseClient.auth.getSession();
+                if (error) {
+                    loginMessage.textContent = `Sessie controleren is niet gelukt: ${error.message}`;
+                    return;
+                }
+                if (data.session?.user) {
+                    await authorizeUser(data.session.user);
+                }
+            } catch (error) {
+                loginMessage.textContent = `Sessie controleren is niet gelukt: ${error.message}`;
+            }
+        }
+
+        async function requestLoginLink() {
+            const email = emailInput.value.trim().toLowerCase();
+            loginMessage.textContent = '';
+            try {
+                const { error } = await supabaseClient.auth.signInWithOtp({
+                    email,
+                    options: {
+                        emailRedirectTo: `${window.location.origin}${window.location.pathname}`
+                    }
+                });
+                if (error) {
+                    loginMessage.textContent = `Inloglink versturen is niet gelukt: ${error.message}`;
+                    return;
+                }
+                emailInput.value = '';
+                loginMessage.textContent = 'Als dit e-mailadres toegang heeft, ontvang je een inloglink. Controleer je inbox.';
+            } catch (error) {
+                loginMessage.textContent = `Inloglink versturen is niet gelukt: ${error.message}`;
+            }
+        }
+
+        async function authorizeUser(user) {
+            if (activeUserId === user.id || checkingUserId === user.id) {
+                return;
+            }
+            checkingUserId = user.id;
+            try {
+                const email = user.email?.trim().toLowerCase();
+                if (!email) {
+                    await rejectSignedInUser('Het ingelogde account heeft geen e-mailadres.');
+                    return;
+                }
+
+                const isAdmin = email === ADMIN_EMAIL;
+                const { data, error } = await supabaseClient
+                    .from('allowed_emails')
+                    .select('email')
+                    .eq('email', email)
+                    .maybeSingle();
+
+                if (error) {
+                    await rejectSignedInUser(`Toegang controleren is niet gelukt: ${error.message}`);
+                    return;
+                }
+                if (!isAdmin && !data) {
+                    await rejectSignedInUser('Dit e-mailadres is niet geregistreerd voor toegang.');
+                    return;
+                }
+
+                activeUserId = user.id;
+                currentUserEmail = email;
+                loginScreen.classList.add('hidden');
+                mainScreen.classList.remove('hidden');
+                pageNavigation.classList.remove('hidden');
+                adminPageButton.classList.toggle('hidden', !isAdmin);
+                adminPage.classList.toggle('hidden', !isAdmin);
+                showPage('dashboard');
+                initializePersonalDashboard(user);
+                startClock();
+                loadNotes();
+                loadTodos();
+                renderQuickLinks();
+                renderEvents();
+                loadMusicLink();
+                fetchWeather();
+                fetchRainForecast();
+                fetchNews();
+            } catch (error) {
+                await rejectSignedInUser(`Toegang controleren is niet gelukt: ${error.message}`);
+            } finally {
+                checkingUserId = null;
+            }
+        }
+
+        async function rejectSignedInUser(message) {
+            loginMessage.textContent = message;
+            try {
+                const { error } = await supabaseClient.auth.signOut();
+                if (error) {
+                    loginMessage.textContent += ` Uitloggen is niet gelukt: ${error.message}`;
+                }
+            } catch (error) {
+                loginMessage.textContent += ` Uitloggen is niet gelukt: ${error.message}`;
+            }
+        }
+
+        function showLogin() {
+            mainScreen.classList.add('hidden');
+            pageNavigation.classList.add('hidden');
+            adminPage.classList.add('hidden');
+            dashboardPage.classList.remove('hidden');
+            adminPageButton.classList.add('hidden');
+            currentUserEmail = '';
+            loginScreen.classList.remove('hidden');
+        }
+
+        function showPage(page) {
+            const isAdminPage = page === 'admin' && currentUserEmail === ADMIN_EMAIL;
+            dashboardPage.classList.toggle('hidden', isAdminPage);
+            adminPage.classList.toggle('hidden', !isAdminPage);
+            if (isAdminPage) {
+                dashboardPageButton.removeAttribute('aria-current');
+            } else {
+                dashboardPageButton.setAttribute('aria-current', 'page');
+            }
+            if (isAdminPage) {
+                adminPageButton.setAttribute('aria-current', 'page');
+                void loadAllowedEmails();
+            } else {
+                adminPageButton.removeAttribute('aria-current');
+            }
+        }
+
+        function initializePersonalDashboard(user) {
+            currentUserEmail = user.email || '';
+            const savedName = localStorage.getItem('dashboard_display_name');
+            displayName.value = savedName || '';
+            updateWelcome(user);
+            renderDailyQuote();
+        }
+
+        function updateWelcome(user) {
+            const email = user?.email || currentUserEmail;
+            const defaultName = email.split('@')[0]
+                .split(/[._-]+/)
+                .filter(Boolean)
+                .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+                .join(' ') || 'daar';
+            const name = localStorage.getItem('dashboard_display_name') || defaultName;
+            const hour = new Date().getHours();
+            const greeting = hour < 12 ? 'Goedemorgen' : hour < 18 ? 'Goedemiddag' : 'Goedenavond';
+            welcomeGreeting.textContent = `${greeting}, ${name}!`;
+            lastDisplayedDate = getLocalDateKey(new Date());
+            todayDate.textContent = new Date().toLocaleDateString('nl-NL', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+        }
+
+        function renderDailyQuote() {
+            const today = new Date();
+            const dayOfYear = Math.floor((Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()) - Date.UTC(today.getFullYear(), 0, 0)) / 86400000);
+            const quote = dailyQuotes[dayOfYear % dailyQuotes.length];
+            dailyQuote.textContent = `“${quote.text}”`;
+            dailyQuoteAuthor.textContent = quote.author;
+        }
+
+        function applyTheme(theme) {
+            const validThemes = ['blue', 'violet', 'emerald', 'rose', 'light'];
+            const selectedTheme = validThemes.includes(theme) ? theme : 'blue';
+            document.documentElement.dataset.theme = selectedTheme;
+            themeSelect.value = selectedTheme;
+        }
+
+        function applySavedTheme() {
+            applyTheme(localStorage.getItem('dashboard_theme') || 'blue');
+        }
+
+        function normalizeHttpUrl(value) {
+            try {
+                const url = new URL(value.trim());
+                if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password) {
+                    return null;
+                }
+                return url.href;
+            } catch {
+                return null;
+            }
+        }
+
+        function renderQuickLinks() {
+            const savedLinks = JSON.parse(localStorage.getItem('dashboard_quick_links') || '[]');
+            const customLinks = Array.isArray(savedLinks)
+                ? savedLinks.filter(link => link && typeof link.title === 'string' && normalizeHttpUrl(link.url))
+                : [];
+            quickLinks.replaceChildren();
+
+            [...defaultQuickLinks, ...customLinks].forEach((link, index) => {
+                const card = document.createElement('div');
+                card.className = 'nav-item';
+                const anchor = document.createElement('a');
+                anchor.className = 'quick-link-anchor';
+                anchor.href = normalizeHttpUrl(link.url);
+                anchor.target = '_blank';
+                anchor.rel = 'noopener noreferrer';
+
+                const icon = document.createElement('i');
+                icon.className = link.icon || 'fa-solid fa-link';
+                icon.setAttribute('aria-hidden', 'true');
+                anchor.appendChild(icon);
+
+                const content = document.createElement('span');
+                content.className = 'nav-content';
+                const title = document.createElement('span');
+                title.className = 'nav-title';
+                title.textContent = link.title;
+                content.appendChild(title);
+                if (link.description) {
+                    const description = document.createElement('span');
+                    description.className = 'nav-desc';
+                    description.textContent = link.description;
+                    content.appendChild(description);
+                }
+                anchor.appendChild(content);
+                card.appendChild(anchor);
+
+                if (index >= defaultQuickLinks.length) {
+                    const removeButton = document.createElement('button');
+                    removeButton.type = 'button';
+                    removeButton.className = 'quick-link-delete';
+                    removeButton.setAttribute('aria-label', `Verwijder snelkoppeling ${link.title}`);
+                    removeButton.innerHTML = '<i class="fa-solid fa-trash" aria-hidden="true"></i>';
+                    removeButton.addEventListener('click', () => removeQuickLink(link));
+                    card.appendChild(removeButton);
+                }
+                quickLinks.appendChild(card);
+            });
+        }
+
+        function addQuickLink() {
+            const title = quickLinkTitle.value.trim();
+            const url = normalizeHttpUrl(quickLinkUrl.value);
+            if (!title || !url) {
+                quickLinkUrl.setCustomValidity('Gebruik een geldig http- of https-adres.');
+                quickLinkUrl.reportValidity();
+                quickLinkUrl.setCustomValidity('');
+                return;
+            }
+            const savedLinks = JSON.parse(localStorage.getItem('dashboard_quick_links') || '[]');
+            const links = Array.isArray(savedLinks) ? savedLinks : [];
+            links.push({ title, url });
+            localStorage.setItem('dashboard_quick_links', JSON.stringify(links));
+            quickLinkForm.reset();
+            renderQuickLinks();
+        }
+
+        function removeQuickLink(linkToRemove) {
+            const savedLinks = JSON.parse(localStorage.getItem('dashboard_quick_links') || '[]');
+            const links = Array.isArray(savedLinks) ? savedLinks : [];
+            const index = links.findIndex(link => link.title === linkToRemove.title && link.url === linkToRemove.url);
+            if (index !== -1) {
+                links.splice(index, 1);
+                localStorage.setItem('dashboard_quick_links', JSON.stringify(links));
+                renderQuickLinks();
+            }
+        }
+
+        function getLocalDateKey(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function getUpcomingEvent(event) {
+            if (!event || typeof event.name !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(event.date)) {
+                return null;
+            }
+            const [year, month, day] = event.date.split('-').map(Number);
+            const originalDate = new Date(year, month - 1, day, 12);
+            if (originalDate.getFullYear() !== year || originalDate.getMonth() !== month - 1 || originalDate.getDate() !== day) {
+                return null;
+            }
+
+            const today = new Date();
+            const todayKey = getLocalDateKey(today);
+            let nextDate = originalDate;
+            if (event.type === 'birthday') {
+                nextDate = new Date(today.getFullYear(), month - 1, day, 12);
+                if (getLocalDateKey(nextDate) < todayKey) {
+                    nextDate.setFullYear(today.getFullYear() + 1);
+                }
+            } else if (getLocalDateKey(nextDate) < todayKey) {
+                return null;
+            }
+
+            const dayDifference = Math.round(
+                (Date.UTC(nextDate.getFullYear(), nextDate.getMonth(), nextDate.getDate()) -
+                    Date.UTC(today.getFullYear(), today.getMonth(), today.getDate())) / 86400000
+            );
+            return { ...event, nextDate, dayDifference };
+        }
+
+        function renderEvents() {
+            const savedEvents = JSON.parse(localStorage.getItem('dashboard_events') || '[]');
+            const events = (Array.isArray(savedEvents) ? savedEvents : [])
+                .map(getUpcomingEvent)
+                .filter(Boolean)
+                .sort((a, b) => a.dayDifference - b.dayDifference || a.name.localeCompare(b.name, 'nl'))
+                .slice(0, 5);
+
+            eventList.replaceChildren();
+            if (!events.length) {
+                const emptyMessage = document.createElement('li');
+                emptyMessage.className = 'widget-hint';
+                emptyMessage.textContent = 'Nog geen komende momenten toegevoegd.';
+                eventList.appendChild(emptyMessage);
+                return;
+            }
+
+            events.forEach(event => {
+                const item = document.createElement('li');
+                item.className = 'event-item';
+                const info = document.createElement('div');
+                info.className = 'event-info';
+                const title = document.createElement('strong');
+                title.textContent = event.name;
+                const detail = document.createElement('span');
+                const when = event.dayDifference === 0 ? 'Vandaag' :
+                    event.dayDifference === 1 ? 'Morgen' : `Over ${event.dayDifference} dagen`;
+                const kind = event.type === 'birthday' ? 'Verjaardag' : 'Afspraak';
+                const date = event.nextDate.toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' });
+                detail.textContent = `${kind} · ${date} · ${when}`;
+                info.append(title, detail);
+
+                const removeButton = document.createElement('button');
+                removeButton.type = 'button';
+                removeButton.className = 'event-delete';
+                removeButton.setAttribute('aria-label', `Verwijder ${event.name}`);
+                removeButton.innerHTML = '<i class="fa-solid fa-trash" aria-hidden="true"></i>';
+                removeButton.addEventListener('click', () => removeCalendarEvent(event.id));
+                item.append(info, removeButton);
+                eventList.appendChild(item);
+            });
+        }
+
+        function addCalendarEvent() {
+            const name = eventName.value.trim();
+            const date = eventDate.value;
+            if (!name || !date) {
+                return;
+            }
+            const savedEvents = JSON.parse(localStorage.getItem('dashboard_events') || '[]');
+            const events = Array.isArray(savedEvents) ? savedEvents : [];
+            events.push({
+                id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+                name,
+                date,
+                type: eventType.value === 'birthday' ? 'birthday' : 'appointment'
+            });
+            localStorage.setItem('dashboard_events', JSON.stringify(events));
+            eventForm.reset();
+            renderEvents();
+        }
+
+        function removeCalendarEvent(id) {
+            const savedEvents = JSON.parse(localStorage.getItem('dashboard_events') || '[]');
+            const events = Array.isArray(savedEvents) ? savedEvents : [];
+            localStorage.setItem('dashboard_events', JSON.stringify(events.filter(event => event.id !== id)));
+            renderEvents();
+        }
+
+        function getMusicEmbedUrl(value) {
+            const normalizedUrl = normalizeHttpUrl(value);
+            if (!normalizedUrl) {
+                return null;
+            }
+            const url = new URL(normalizedUrl);
+            if (url.hostname === 'open.spotify.com') {
+                const match = url.pathname.match(/^\/(playlist|album|track|artist|episode|show)\/([A-Za-z0-9]+)\/?$/);
+                return match ? `https://open.spotify.com/embed/${match[1]}/${match[2]}` : '';
+            }
+            if (['youtube.com', 'www.youtube.com', 'music.youtube.com', 'youtu.be'].includes(url.hostname)) {
+                const id = url.hostname === 'youtu.be'
+                    ? url.pathname.split('/').filter(Boolean)[0]
+                    : url.searchParams.get('v') || url.pathname.match(/^\/(?:embed|shorts)\/([A-Za-z0-9_-]{11})/)?.[1];
+                return id && /^[A-Za-z0-9_-]{11}$/.test(id)
+                    ? `https://www.youtube-nocookie.com/embed/${id}`
+                    : '';
+            }
+            return '';
+        }
+
+        function renderMusicLink(value) {
+            const normalizedUrl = normalizeHttpUrl(value);
+            musicPlayer.removeAttribute('src');
+            musicPlayer.classList.add('hidden');
+            musicOpenLink.classList.add('hidden');
+            if (!normalizedUrl) {
+                musicStatus.textContent = 'Voeg een Spotify- of YouTube-link toe om hier te luisteren.';
+                return;
+            }
+
+            musicUrl.value = normalizedUrl;
+            const embedUrl = getMusicEmbedUrl(normalizedUrl);
+            if (embedUrl) {
+                musicPlayer.src = embedUrl;
+                musicPlayer.classList.remove('hidden');
+                musicStatus.textContent = 'Muzieklink opgeslagen. Gebruik de speler hieronder om af te spelen.';
+            } else if (embedUrl === '') {
+                musicStatus.textContent = 'Deze link kan hier niet worden ingebed; open hem in de muziek-app.';
+                musicOpenLink.href = normalizedUrl;
+                musicOpenLink.classList.remove('hidden');
+            } else {
+                musicStatus.textContent = 'Deze muziekslink is ongeldig. Gebruik een http- of https-link.';
+            }
+        }
+
+        function loadMusicLink() {
+            renderMusicLink(localStorage.getItem('dashboard_music_url') || '');
+        }
+
+        function saveMusicLink() {
+            const normalizedUrl = normalizeHttpUrl(musicUrl.value);
+            if (!normalizedUrl) {
+                musicUrl.setCustomValidity('Gebruik een geldig http- of https-adres.');
+                musicUrl.reportValidity();
+                musicUrl.setCustomValidity('');
+                return;
+            }
+            localStorage.setItem('dashboard_music_url', normalizedUrl);
+            renderMusicLink(normalizedUrl);
+        }
+
+        function setFocusMode(minutes, message) {
+            clearInterval(focusInterval);
+            focusInterval = null;
+            focusDeadline = null;
+            focusDuration = minutes * 60;
+            focusRemaining = focusDuration;
+            focusModeButton.setAttribute('aria-pressed', String(minutes === 25));
+            breakModeButton.setAttribute('aria-pressed', String(minutes === 5));
+            focusStatus.textContent = message;
+            focusStartButton.innerHTML = '<i class="fa-solid fa-play"></i> Start';
+            renderFocusTimer();
+        }
+
+        function toggleFocusTimer() {
+            if (focusInterval) {
+                focusRemaining = Math.max(0, Math.ceil((focusDeadline - Date.now()) / 1000));
+                clearInterval(focusInterval);
+                focusInterval = null;
+                focusDeadline = null;
+                focusStartButton.innerHTML = '<i class="fa-solid fa-play"></i> Hervat';
+                focusStatus.textContent = 'Timer gepauzeerd.';
+                renderFocusTimer();
+                return;
+            }
+
+            if (focusRemaining <= 0) {
+                focusRemaining = focusDuration;
+                renderFocusTimer();
+            }
+
+            focusDeadline = Date.now() + focusRemaining * 1000;
+            focusStartButton.innerHTML = '<i class="fa-solid fa-pause"></i> Pauzeer';
+            focusStatus.textContent = focusModeButton.getAttribute('aria-pressed') === 'true'
+                ? 'Goed bezig! Blijf gefocust.'
+                : 'Even ontspannen.';
+            focusInterval = setInterval(updateFocusTimer, 250);
+            updateFocusTimer();
+        }
+
+        function updateFocusTimer() {
+            focusRemaining = Math.max(0, Math.ceil((focusDeadline - Date.now()) / 1000));
+            renderFocusTimer();
+            if (focusRemaining === 0) {
+                clearInterval(focusInterval);
+                focusInterval = null;
+                focusDeadline = null;
+                focusStartButton.innerHTML = '<i class="fa-solid fa-play"></i> Start opnieuw';
+                focusStatus.textContent = focusModeButton.getAttribute('aria-pressed') === 'true'
+                    ? 'Focusblok afgerond! Neem even pauze.'
+                    : 'Pauze voorbij! Klaar voor een focusblok?';
+            }
+        }
+
+        function resetFocusTimer() {
+            setFocusMode(
+                focusModeButton.getAttribute('aria-pressed') === 'true' ? 25 : 5,
+                focusModeButton.getAttribute('aria-pressed') === 'true' ? 'Klaar voor een focusblok.' : 'Klaar voor een korte pauze.'
+            );
+        }
+
+        function renderFocusTimer() {
+            const minutes = Math.floor(focusRemaining / 60).toString().padStart(2, '0');
+            const seconds = (focusRemaining % 60).toString().padStart(2, '0');
+            const progress = focusDuration ? ((focusDuration - focusRemaining) / focusDuration) * 100 : 0;
+            focusTime.textContent = `${minutes}:${seconds}`;
+            focusClock.style.setProperty('--timer-progress', `${progress}%`);
+            focusClock.setAttribute('aria-label', `${minutes} minuten en ${seconds} seconden resterend`);
+        }
+
+        async function loadAllowedEmails() {
+            adminStatus.textContent = 'E-mailadressen laden...';
+            try {
+                const { data, error } = await supabaseClient
+                    .from('allowed_emails')
+                    .select('email')
+                    .order('email');
+                if (error) {
+                    adminStatus.textContent = `Laden is niet gelukt: ${error.message}`;
+                    return;
+                }
+                allowedEmailsList.replaceChildren();
+                data.forEach(({ email }) => {
+                    const item = document.createElement('li');
+                    const address = document.createElement('span');
+                    address.textContent = email;
+                    item.appendChild(address);
+
+                    if (email !== ADMIN_EMAIL) {
+                        const removeButton = document.createElement('button');
+                        removeButton.type = 'button';
+                        removeButton.setAttribute('aria-label', `Verwijder ${email}`);
+                        removeButton.innerHTML = '<i class="fa-solid fa-trash" aria-hidden="true"></i> Verwijderen';
+                        removeButton.addEventListener('click', () => {
+                            void removeAllowedEmail(email);
+                        });
+                        item.appendChild(removeButton);
+                    }
+                    allowedEmailsList.appendChild(item);
+                });
+                adminStatus.textContent = `${data.length} e-mailadres(sen) met toegang.`;
+            } catch (error) {
+                adminStatus.textContent = `Laden is niet gelukt: ${error.message}`;
+            }
+        }
+
+        async function addAllowedEmail() {
+            const email = newAllowedEmail.value.trim().toLowerCase();
+            adminStatus.textContent = '';
+            try {
+                const { error } = await supabaseClient
+                    .from('allowed_emails')
+                    .insert({ email, added_by: activeUserId });
+                if (error) {
+                    adminStatus.textContent = `Toevoegen is niet gelukt: ${error.message}`;
+                    return;
+                }
+                newAllowedEmail.value = '';
+                await loadAllowedEmails();
+            } catch (error) {
+                adminStatus.textContent = `Toevoegen is niet gelukt: ${error.message}`;
+            }
+        }
+
+        async function removeAllowedEmail(email) {
+            adminStatus.textContent = '';
+            try {
+                const { error } = await supabaseClient
+                    .from('allowed_emails')
+                    .delete()
+                    .eq('email', email);
+                if (error) {
+                    adminStatus.textContent = `Verwijderen is niet gelukt: ${error.message}`;
+                    return;
+                }
+                await loadAllowedEmails();
+            } catch (error) {
+                adminStatus.textContent = `Verwijderen is niet gelukt: ${error.message}`;
+            }
         }
 
         // Live Klok
@@ -480,9 +1431,15 @@
             function updateTime() {
                 const now = new Date();
                 clockDisplay.innerHTML = `<i class="fa-regular fa-clock"></i> ` + now.toLocaleTimeString('nl-NL');
+                if (getLocalDateKey(now) !== lastDisplayedDate) {
+                    updateWelcome();
+                    renderDailyQuote();
+                    renderTodos();
+                }
             }
             updateTime();
-            setInterval(updateTime, 1000);
+            clearInterval(clockInterval);
+            clockInterval = setInterval(updateTime, 1000);
         }
 
         // Live Weer ophalen voor Gaanderen (lat=51.9288, lng=6.3492)
@@ -586,16 +1543,57 @@
             todos.forEach((todo, index) => {
                 const li = document.createElement('li');
                 li.className = `todo-item ${todo.completed ? 'completed' : ''}`;
-                li.innerHTML = `<span onclick="toggleTodo(${index})">${todo.text}</span><button class="todo-delete" onclick="deleteTodo(${index})"><i class="fa-solid fa-trash"></i></button>`;
+                const toggle = document.createElement('input');
+                toggle.type = 'checkbox';
+                toggle.className = 'todo-toggle';
+                toggle.checked = Boolean(todo.completed);
+                toggle.setAttribute('aria-label', `${todo.completed ? 'Markeer' : 'Rond'} ${todo.text} ${todo.completed ? 'onvoltooid' : 'af'}`);
+                toggle.addEventListener('change', () => toggleTodo(index));
+
+                const text = document.createElement('span');
+                text.textContent = todo.text;
+
+                const removeButton = document.createElement('button');
+                removeButton.type = 'button';
+                removeButton.className = 'todo-delete';
+                removeButton.setAttribute('aria-label', `Verwijder taak ${todo.text}`);
+                removeButton.innerHTML = '<i class="fa-solid fa-trash" aria-hidden="true"></i>';
+                removeButton.addEventListener('click', () => deleteTodo(index));
+
+                li.append(toggle, text, removeButton);
                 todoList.appendChild(li);
             });
+            renderDailyTodoProgress();
+        }
+        function renderDailyTodoProgress() {
+            const today = getLocalDateKey(new Date());
+            const todaysTodos = todos.filter(todo => todo.createdAt === today);
+            const completedCount = todaysTodos.filter(todo => todo.completed && todo.completedAt === today).length;
+            const progress = todaysTodos.length ? Math.round((completedCount / todaysTodos.length) * 100) : 0;
+            todoProgressText.textContent = `${completedCount} / ${todaysTodos.length}`;
+            todoProgressFill.style.width = `${progress}%`;
+            todoProgressTrack.setAttribute('aria-valuenow', String(progress));
         }
         function addTodo() {
             const text = todoInput.value.trim();
-            if (text) { todos.push({ text: text, completed: false }); todoInput.value = ''; saveTodos(); renderTodos(); }
+            if (text) {
+                todos.push({ text, completed: false, createdAt: getLocalDateKey(new Date()) });
+                todoInput.value = '';
+                saveTodos();
+                renderTodos();
+            }
         }
-        window.toggleTodo = (index) => { todos[index].completed = !todos[index].completed; saveTodos(); renderTodos(); };
-        window.deleteTodo = (index) => { todos.splice(index, 1); saveTodos(); renderTodos(); };
+        function toggleTodo(index) {
+            todos[index].completed = !todos[index].completed;
+            todos[index].completedAt = todos[index].completed ? getLocalDateKey(new Date()) : null;
+            saveTodos();
+            renderTodos();
+        }
+        function deleteTodo(index) {
+            todos.splice(index, 1);
+            saveTodos();
+            renderTodos();
+        }
         addTodoBtn.addEventListener('click', addTodo);
         todoInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') addTodo(); });
         function loadTodos() { renderTodos(); }
