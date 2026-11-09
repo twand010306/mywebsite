@@ -1,8 +1,10 @@
 -- Run this script once in the Supabase project's SQL Editor.
 -- The administrator is authenticated by Supabase; never put a service-role key in the website.
--- Enable the Email provider under Authentication > Providers and configure SMTP to send magic links.
--- The website's allowed_emails list controls dashboard access; magic-link sign-in creates Auth users on first use.
--- Set the deployed website URL under Authentication > URL Configuration and allow it as a redirect URL for magic links.
+-- Enable Google under Authentication > Providers and add its OAuth client ID and secret.
+-- In Google Cloud, set this as an authorized redirect URI:
+-- https://ugpdnfyscmvnfbljebus.supabase.co/auth/v1/callback
+-- Add the deployed website URL to Supabase's Authentication > URL Configuration redirect allow-list.
+-- The website's allowed_emails list controls dashboard access after Google sign-in.
 -- Add local development URLs there too if you test with a local web server.
 
 create table if not exists public.allowed_emails (

@@ -467,24 +467,18 @@
 </head>
 <body>
 
-    <!-- INLOGSCHERM (WACHTWOORDLOZE E-MAILLINK) -->
+    <!-- INLOGSCHERM (GOOGLE OAUTH) -->
     <div id="loginScreen" class="portal-card">
         <div style="text-align: center; margin-bottom: 28px;">
-            <i class="fa-solid fa-envelope" style="font-size: 3rem; color: var(--accent); margin-bottom: 14px; filter: drop-shadow(0 0 10px var(--accent-glow));"></i>
+            <i class="fa-brands fa-google" style="font-size: 3rem; color: var(--accent); margin-bottom: 14px; filter: drop-shadow(0 0 10px var(--accent-glow));"></i>
             <h2 style="font-size: 1.6rem; font-weight: 600; letter-spacing: 0.3px;">Toegang Verifiëren</h2>
-            <p style="color: var(--text-secondary); font-size: 0.88rem; margin-top: 6px;">Vul je e-mailadres in en ontvang een eenmalige inloglink. Dit apparaat blijft daarna ingelogd, tenzij je uitlogt, browsergegevens wist of de sessie verloopt.</p>
+            <p style="color: var(--text-secondary); font-size: 0.88rem; margin-top: 6px;">Log in met Google. Dit apparaat blijft daarna ingelogd, tenzij je uitlogt, browsergegevens wist of de sessie verloopt.</p>
         </div>
         
-        <form id="loginForm">
-            <div class="input-group">
-                <i class="fa-solid fa-at"></i>
-                <input type="email" id="emailInput" placeholder="jouw@email.nl" autocomplete="email" required>
-            </div>
-            <button type="submit">
-                <i class="fa-solid fa-envelope"></i> Stuur inloglink
-            </button>
-        </form>
-        <p class="widget-hint">Geen wachtwoord nodig. Alleen e-mailadressen op de toegangslijst kunnen het dashboard gebruiken. Bij de eerste inloglink wordt automatisch een account aangemaakt.</p>
+        <button id="googleLoginButton" type="button">
+            <i class="fa-brands fa-google"></i> Inloggen met Google
+        </button>
+        <p class="widget-hint">Geen websitewachtwoord of SMTP nodig. Alleen Google-accounts waarvan het e-mailadres op de toegangslijst staat, kunnen het dashboard gebruiken.</p>
         <div id="loginMessage" class="error-message" role="status" aria-live="polite"></div>
     </div>
 
@@ -699,8 +693,7 @@
 
         const loginScreen = document.getElementById('loginScreen');
         const mainScreen = document.getElementById('mainScreen');
-        const loginForm = document.getElementById('loginForm');
-        const emailInput = document.getElementById('emailInput');
+        const googleLoginButton = document.getElementById('googleLoginButton');
         const loginMessage = document.getElementById('loginMessage');
         const logoutBtn = document.getElementById('logoutBtn');
         const pageNavigation = document.getElementById('pageNavigation');
@@ -779,9 +772,8 @@
         localStorage.removeItem('isAuthenticated');
         sessionStorage.removeItem('isAuthenticated');
 
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            void sendLoginLink();
+        googleLoginButton.addEventListener('click', function() {
+            void signInWithGoogle();
         });
 
         logoutBtn.addEventListener('click', async function() {
@@ -877,31 +869,28 @@
             }
         }
 
-        async function sendLoginLink() {
+        async function signInWithGoogle() {
             if (window.location.protocol === 'file:') {
-                loginMessage.textContent = 'Een inloglink aanvragen werkt niet vanuit een lokaal bestand. Open https://twand010306.github.io/mywebsite/.';
+                loginMessage.textContent = 'Inloggen met Google werkt niet vanuit een lokaal bestand. Open https://twand010306.github.io/mywebsite/.';
                 return;
             }
 
-            const email = emailInput.value.trim().toLowerCase();
-            loginForm.querySelector('button[type="submit"]').disabled = true;
-            loginMessage.textContent = 'Inloglink aanvragen...';
+            googleLoginButton.disabled = true;
+            loginMessage.textContent = 'Google-inlogscherm openen...';
             try {
-                const { error } = await supabaseClient.auth.signInWithOtp({
-                    email,
+                const { error } = await supabaseClient.auth.signInWithOAuth({
+                    provider: 'google',
                     options: {
-                        emailRedirectTo: `${window.location.origin}${window.location.pathname}`
+                        redirectTo: `${window.location.origin}${window.location.pathname}`
                     }
                 });
                 if (error) {
-                    loginMessage.textContent = `Inloglink aanvragen is niet gelukt: ${error.message}`;
-                    return;
+                    loginMessage.textContent = `Inloggen met Google is niet gelukt: ${error.message}`;
                 }
-                loginMessage.textContent = 'We sturen een inloglink als e-mail kan worden bezorgd. Na openen wordt gecontroleerd of je e-mailadres toegang heeft. Controleer ook je spammap.';
             } catch (error) {
-                loginMessage.textContent = `Inloglink aanvragen is niet gelukt: ${error.message}`;
+                loginMessage.textContent = `Inloggen met Google is niet gelukt: ${error.message}`;
             } finally {
-                loginForm.querySelector('button[type="submit"]').disabled = false;
+                googleLoginButton.disabled = false;
             }
         }
 
