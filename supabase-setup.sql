@@ -1,9 +1,8 @@
 -- Run this script once in the Supabase project's SQL Editor.
 -- The administrator is authenticated by Supabase; never put a service-role key in the website.
--- Enable the Email provider (password sign-in) under Authentication > Providers.
--- The website's allowed_emails list grants dashboard access but does not create Auth users.
--- Create each user's Auth account and password under Authentication > Users.
--- Set the deployed website URL under Authentication > URL Configuration and allow it as a redirect URL for password resets.
+-- Enable the Email provider under Authentication > Providers and configure SMTP to send magic links.
+-- The website's allowed_emails list controls dashboard access; magic-link sign-in creates Auth users on first use.
+-- Set the deployed website URL under Authentication > URL Configuration and allow it as a redirect URL for magic links.
 -- Add local development URLs there too if you test with a local web server.
 
 create table if not exists public.allowed_emails (
