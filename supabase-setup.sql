@@ -1,6 +1,9 @@
 -- Run this script once in the Supabase project's SQL Editor.
 -- The administrator is authenticated by Supabase; never put a service-role key in the website.
--- Enable the Email provider and add the deployed website URL under Authentication > URL Configuration.
+-- Enable the Email provider (password sign-in) under Authentication > Providers.
+-- The website's allowed_emails list grants dashboard access but does not create Auth users.
+-- Create each user's Auth account and password under Authentication > Users.
+-- Add the deployed website URL under Authentication > URL Configuration.
 -- Add local development URLs there too if you test with a local web server.
 
 create table if not exists public.allowed_emails (

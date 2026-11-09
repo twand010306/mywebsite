@@ -115,6 +115,7 @@
         :root[data-theme="light"] .todo-input-group input,
         :root[data-theme="light"] .dashboard-form input,
         :root[data-theme="light"] .dashboard-form select,
+        :root[data-theme="light"] .input-group input[type="password"],
         :root[data-theme="light"] .settings-select,
         :root[data-theme="light"] .todo-item,
         :root[data-theme="light"] .news-item,
@@ -410,7 +411,15 @@
             transition: all 0.2s ease;
         }
 
-        input[type="email"]:focus {
+        .input-group input[type="password"] {
+            width: 100%; padding: 14px 16px 14px 44px; background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 10px;
+            color: var(--text-primary); font-size: 0.95rem; outline: none;
+            transition: all 0.2s ease;
+        }
+
+        input[type="email"]:focus,
+        .input-group input[type="password"]:focus {
             border-color: var(--accent);
             box-shadow: 0 0 12px var(--accent-glow);
         }
@@ -467,12 +476,12 @@
 </head>
 <body>
 
-    <!-- INLOGSCHERM (E-MAILCHECK) -->
+    <!-- INLOGSCHERM (E-MAIL EN WACHTWOORD) -->
     <div id="loginScreen" class="portal-card">
         <div style="text-align: center; margin-bottom: 28px;">
-            <i class="fa-solid fa-envelope-circle-check" style="font-size: 3rem; color: var(--accent); margin-bottom: 14px; filter: drop-shadow(0 0 10px var(--accent-glow));"></i>
+            <i class="fa-solid fa-lock" style="font-size: 3rem; color: var(--accent); margin-bottom: 14px; filter: drop-shadow(0 0 10px var(--accent-glow));"></i>
             <h2 style="font-size: 1.6rem; font-weight: 600; letter-spacing: 0.3px;">Toegang Verifiëren</h2>
-            <p style="color: var(--text-secondary); font-size: 0.88rem; margin-top: 6px;">Log veilig in met een link die we naar uw e-mailadres sturen.</p>
+            <p style="color: var(--text-secondary); font-size: 0.88rem; margin-top: 6px;">Log in met het e-mailadres en wachtwoord van je account. Dit apparaat blijft daarna ingelogd, tenzij je uitlogt, browsergegevens wist of de sessie verloopt.</p>
         </div>
         
         <form id="loginForm">
@@ -480,10 +489,15 @@
                 <i class="fa-solid fa-at"></i>
                 <input type="email" id="emailInput" placeholder="jouw@email.nl" autocomplete="email" required>
             </div>
+            <div class="input-group">
+                <i class="fa-solid fa-key"></i>
+                <input type="password" id="passwordInput" placeholder="Wachtwoord" autocomplete="current-password" required>
+            </div>
             <button type="submit">
-                <i class="fa-solid fa-right-to-bracket"></i> Stuur inloglink
+                <i class="fa-solid fa-right-to-bracket"></i> Inloggen
             </button>
         </form>
+        <p class="widget-hint">Inloggen verstuurt geen e-mail. Nog geen account of wachtwoord? De beheerder moet je account eerst in Supabase aanmaken; toevoegen aan de toegangslijst alleen is niet genoeg.</p>
         <div id="loginMessage" class="error-message" role="status" aria-live="polite"></div>
     </div>
 
@@ -644,6 +658,11 @@
                         </select>
                     </div>
                 </div>
+                <form id="passwordForm" class="dashboard-form">
+                    <input type="password" id="newPassword" minlength="8" autocomplete="new-password" placeholder="Nieuw wachtwoord (minimaal 8 tekens)" aria-label="Nieuw wachtwoord" required>
+                    <input type="password" id="confirmPassword" minlength="8" autocomplete="new-password" placeholder="Herhaal nieuw wachtwoord" aria-label="Herhaal nieuw wachtwoord" required>
+                    <button type="submit"><i class="fa-solid fa-key"></i> Wachtwoord opslaan</button>
+                </form>
                 <p id="settingsStatus" class="widget-hint" role="status" aria-live="polite">Je naam en thema worden alleen in deze browser opgeslagen.</p>
             </section>
 
@@ -673,7 +692,7 @@
 
         <section id="adminPage" class="hidden" aria-labelledby="adminTitle">
             <div class="section-title" id="adminTitle"><i class="fa-solid fa-user-shield"></i> E-mailtoegang beheren</div>
-            <p style="color: var(--text-secondary); font-size: 0.88rem; margin-top: 8px;">Alleen de beheerder kan adressen aan de toegangslijst toevoegen of verwijderen.</p>
+            <p style="color: var(--text-secondary); font-size: 0.88rem; margin-top: 8px;">Alleen de beheerder kan adressen aan de toegangslijst toevoegen of verwijderen. Toevoegen geeft toegang, maar maakt geen account of wachtwoord aan; accounts beheer je in Supabase onder Authentication → Users.</p>
             <form id="addEmailForm" class="todo-input-group">
                 <input type="email" id="newAllowedEmail" placeholder="naam@voorbeeld.nl" autocomplete="email" required>
                 <button type="submit"><i class="fa-solid fa-plus"></i> Toevoegen</button>
@@ -688,12 +707,19 @@
         const SUPABASE_URL = 'https://ugpdnfyscmvnfbljebus.supabase.co';
         const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_LDJXifCF-758czFUuY3ZVA_T7RFsQ9k';
         const ADMIN_EMAIL = 'twan.dieker@gmail.com';
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true,
+                detectSessionInUrl: true
+            }
+        });
 
         const loginScreen = document.getElementById('loginScreen');
         const mainScreen = document.getElementById('mainScreen');
         const loginForm = document.getElementById('loginForm');
         const emailInput = document.getElementById('emailInput');
+        const passwordInput = document.getElementById('passwordInput');
         const loginMessage = document.getElementById('loginMessage');
         const logoutBtn = document.getElementById('logoutBtn');
         const pageNavigation = document.getElementById('pageNavigation');
@@ -737,6 +763,9 @@
         const musicPlayer = document.getElementById('musicPlayer');
         const musicOpenLink = document.getElementById('musicOpenLink');
         const nameForm = document.getElementById('nameForm');
+        const passwordForm = document.getElementById('passwordForm');
+        const newPassword = document.getElementById('newPassword');
+        const confirmPassword = document.getElementById('confirmPassword');
         const displayName = document.getElementById('displayName');
         const themeSelect = document.getElementById('themeSelect');
         const settingsStatus = document.getElementById('settingsStatus');
@@ -774,7 +803,7 @@
 
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            void requestLoginLink();
+            void signInWithPassword();
         });
 
         logoutBtn.addEventListener('click', async function() {
@@ -819,6 +848,11 @@
                 settingsStatus.textContent = 'Je naam is opgeslagen in deze browser.';
             }
             updateWelcome();
+        });
+
+        passwordForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            void updatePassword();
         });
 
         themeSelect.addEventListener('change', () => {
@@ -870,24 +904,46 @@
             }
         }
 
-        async function requestLoginLink() {
+        async function signInWithPassword() {
+            if (window.location.protocol === 'file:') {
+                loginMessage.textContent = 'Inloggen werkt niet vanuit een lokaal bestand. Open https://twand010306.github.io/mywebsite/.';
+                return;
+            }
+
             const email = emailInput.value.trim().toLowerCase();
             loginMessage.textContent = '';
             try {
-                const { error } = await supabaseClient.auth.signInWithOtp({
+                const { error } = await supabaseClient.auth.signInWithPassword({
                     email,
-                    options: {
-                        emailRedirectTo: `${window.location.origin}${window.location.pathname}`
-                    }
+                    password: passwordInput.value
                 });
                 if (error) {
-                    loginMessage.textContent = `Inloglink versturen is niet gelukt: ${error.message}`;
+                    loginMessage.textContent = 'Inloggen is niet gelukt. Controleer je e-mailadres en wachtwoord, of vraag de beheerder om je account in Supabase in te stellen.';
+                } else {
+                    passwordInput.value = '';
+                }
+            } catch (error) {
+                loginMessage.textContent = `Inloggen is niet gelukt: ${error.message}`;
+            }
+        }
+
+        async function updatePassword() {
+            if (newPassword.value !== confirmPassword.value) {
+                settingsStatus.textContent = 'De wachtwoorden komen niet overeen.';
+                return;
+            }
+
+            settingsStatus.textContent = 'Wachtwoord opslaan...';
+            try {
+                const { error } = await supabaseClient.auth.updateUser({ password: newPassword.value });
+                if (error) {
+                    settingsStatus.textContent = `Wachtwoord wijzigen is niet gelukt: ${error.message}`;
                     return;
                 }
-                emailInput.value = '';
-                loginMessage.textContent = 'Als dit e-mailadres toegang heeft, ontvang je een inloglink. Controleer je inbox.';
+                passwordForm.reset();
+                settingsStatus.textContent = 'Je wachtwoord is bijgewerkt.';
             } catch (error) {
-                loginMessage.textContent = `Inloglink versturen is niet gelukt: ${error.message}`;
+                settingsStatus.textContent = `Wachtwoord wijzigen is niet gelukt: ${error.message}`;
             }
         }
 
@@ -904,19 +960,21 @@
                 }
 
                 const isAdmin = email === ADMIN_EMAIL;
-                const { data, error } = await supabaseClient
-                    .from('allowed_emails')
-                    .select('email')
-                    .eq('email', email)
-                    .maybeSingle();
+                if (!isAdmin) {
+                    const { data, error } = await supabaseClient
+                        .from('allowed_emails')
+                        .select('email')
+                        .eq('email', email)
+                        .maybeSingle();
 
-                if (error) {
-                    await rejectSignedInUser(`Toegang controleren is niet gelukt: ${error.message}`);
-                    return;
-                }
-                if (!isAdmin && !data) {
-                    await rejectSignedInUser('Dit e-mailadres is niet geregistreerd voor toegang.');
-                    return;
+                    if (error) {
+                        await rejectSignedInUser(`Toegang controleren is niet gelukt: ${error.message}`);
+                        return;
+                    }
+                    if (!data) {
+                        await rejectSignedInUser('Dit e-mailadres is geverifieerd, maar staat niet op de toegangslijst. Vraag de beheerder om het toe te voegen.');
+                        return;
+                    }
                 }
 
                 activeUserId = user.id;
