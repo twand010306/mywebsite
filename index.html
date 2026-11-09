@@ -918,7 +918,7 @@
                     password: passwordInput.value
                 });
                 if (error) {
-                    loginMessage.textContent = 'Inloggen is niet gelukt. Controleer je e-mailadres en wachtwoord, of vraag de beheerder om je account in Supabase in te stellen.';
+                    loginMessage.textContent = `Inloggen is niet gelukt: ${error.message}. Controleer je e-mailadres en wachtwoord, of vraag de beheerder om je account in Supabase in te stellen.`;
                 } else {
                     passwordInput.value = '';
                 }
