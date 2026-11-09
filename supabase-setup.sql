@@ -3,7 +3,7 @@
 -- Enable the Email provider (password sign-in) under Authentication > Providers.
 -- The website's allowed_emails list grants dashboard access but does not create Auth users.
 -- Create each user's Auth account and password under Authentication > Users.
--- Add the deployed website URL under Authentication > URL Configuration.
+-- Set the deployed website URL under Authentication > URL Configuration and allow it as a redirect URL for password resets.
 -- Add local development URLs there too if you test with a local web server.
 
 create table if not exists public.allowed_emails (

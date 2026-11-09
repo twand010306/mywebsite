@@ -433,6 +433,8 @@
         }
 
         button:hover { background-color: var(--accent-hover); transform: translateY(-1px); }
+        .password-reset-button { width: auto; margin: 0 auto; padding: 8px 0; background: none; color: var(--accent); box-shadow: none; }
+        .password-reset-button:hover { background: none; color: var(--accent-hover); box-shadow: none; transform: none; }
 
         .btn-logout { background-color: transparent; border: 1px solid rgba(255, 255, 255, 0.2); color: var(--text-secondary); width: auto; padding: 8px 16px; box-shadow: none; }
         .btn-logout:hover { background-color: var(--danger); border-color: var(--danger); color: white; transform: none; box-shadow: none; }
@@ -497,7 +499,8 @@
                 <i class="fa-solid fa-right-to-bracket"></i> Inloggen
             </button>
         </form>
-        <p class="widget-hint">Inloggen verstuurt geen e-mail. Nog geen account of wachtwoord? De beheerder moet je account eerst in Supabase aanmaken; toevoegen aan de toegangslijst alleen is niet genoeg.</p>
+        <button id="passwordResetButton" class="password-reset-button" type="button">Wachtwoord vergeten?</button>
+        <p class="widget-hint">Inloggen verstuurt geen e-mail. Met ‘Wachtwoord vergeten?’ kun je een resetlink aanvragen. Nog geen account? De beheerder moet je account eerst in Supabase aanmaken; toevoegen aan de toegangslijst alleen is niet genoeg.</p>
         <div id="loginMessage" class="error-message" role="status" aria-live="polite"></div>
     </div>
 
@@ -720,6 +723,7 @@
         const loginForm = document.getElementById('loginForm');
         const emailInput = document.getElementById('emailInput');
         const passwordInput = document.getElementById('passwordInput');
+        const passwordResetButton = document.getElementById('passwordResetButton');
         const loginMessage = document.getElementById('loginMessage');
         const logoutBtn = document.getElementById('logoutBtn');
         const pageNavigation = document.getElementById('pageNavigation');
@@ -791,6 +795,7 @@
         let activeUserId = null;
         let currentUserEmail = '';
         let checkingUserId = null;
+        let passwordRecoveryPending = false;
         let clockInterval = null;
         let lastDisplayedDate = '';
         let focusDuration = 25 * 60;
@@ -804,6 +809,10 @@
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
             void signInWithPassword();
+        });
+
+        passwordResetButton.addEventListener('click', function() {
+            void sendPasswordReset();
         });
 
         logoutBtn.addEventListener('click', async function() {
@@ -876,7 +885,10 @@
             saveMusicLink();
         });
 
-        supabaseClient.auth.onAuthStateChange((_event, session) => {
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+            if (event === 'PASSWORD_RECOVERY') {
+                passwordRecoveryPending = true;
+            }
             queueMicrotask(() => {
                 if (session?.user) {
                     void authorizeUser(session.user);
@@ -918,12 +930,41 @@
                     password: passwordInput.value
                 });
                 if (error) {
-                    loginMessage.textContent = `Inloggen is niet gelukt: ${error.message}. Controleer je e-mailadres en wachtwoord, of vraag de beheerder om je account in Supabase in te stellen.`;
+                    loginMessage.textContent = `Inloggen is niet gelukt: ${error.message}. Controleer je e-mailadres en wachtwoord, gebruik ‘Wachtwoord vergeten?’ of vraag de beheerder om je account in Supabase in te stellen.`;
                 } else {
                     passwordInput.value = '';
                 }
             } catch (error) {
                 loginMessage.textContent = `Inloggen is niet gelukt: ${error.message}`;
+            }
+        }
+
+        async function sendPasswordReset() {
+            if (window.location.protocol === 'file:') {
+                loginMessage.textContent = 'Een wachtwoordreset werkt niet vanuit een lokaal bestand. Open https://twand010306.github.io/mywebsite/.';
+                return;
+            }
+            if (!emailInput.reportValidity()) {
+                emailInput.focus();
+                return;
+            }
+
+            passwordResetButton.disabled = true;
+            loginMessage.textContent = 'Resetlink aanvragen...';
+            try {
+                const { error } = await supabaseClient.auth.resetPasswordForEmail(
+                    emailInput.value.trim().toLowerCase(),
+                    { redirectTo: `${window.location.origin}${window.location.pathname}` }
+                );
+                if (error) {
+                    loginMessage.textContent = `Resetlink aanvragen is niet gelukt: ${error.message}`;
+                    return;
+                }
+                loginMessage.textContent = 'Als er een account voor dit e-mailadres bestaat, ontvang je een resetlink. Open die link om een nieuw wachtwoord in te stellen.';
+            } catch (error) {
+                loginMessage.textContent = `Resetlink aanvragen is niet gelukt: ${error.message}`;
+            } finally {
+                passwordResetButton.disabled = false;
             }
         }
 
@@ -986,6 +1027,12 @@
                 adminPage.classList.toggle('hidden', !isAdmin);
                 showPage('dashboard');
                 initializePersonalDashboard(user);
+                if (passwordRecoveryPending) {
+                    passwordRecoveryPending = false;
+                    settingsStatus.textContent = 'Stel hier je nieuwe wachtwoord in.';
+                    newPassword.focus();
+                    newPassword.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
                 startClock();
                 loadNotes();
                 loadTodos();
