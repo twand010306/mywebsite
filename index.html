@@ -419,6 +419,36 @@
         .week-day h4 { margin-bottom: 5px; color: var(--accent); font-size: 0.82rem; }
         .week-day p { color: var(--text-secondary); font-size: 0.8rem; overflow-wrap: anywhere; }
         .week-day p + p { margin-top: 3px; }
+        .home-data-list { display: grid; gap: 8px; max-height: 260px; overflow-y: auto; margin-top: 12px; list-style: none; }
+        .home-data-item { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; padding: 10px 12px; border: 1px solid rgba(163, 190, 225, 0.07); border-radius: 10px; background: rgba(5, 10, 18, 0.34); }
+        .home-data-copy { min-width: 0; }
+        .home-data-copy strong { display: block; font-size: 0.88rem; overflow-wrap: anywhere; }
+        .home-data-copy span { display: block; margin-top: 3px; color: var(--text-secondary); font-size: 0.78rem; overflow-wrap: anywhere; }
+        .home-data-delete { flex: 0 0 auto; width: auto; padding: 6px 8px; background: transparent; color: var(--danger); box-shadow: none; }
+        .home-data-delete:hover { background: var(--danger); }
+        .home-data-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; }
+        .home-data-grid input { width: 100%; min-width: 0; padding: 10px 12px; border: 1px solid rgba(163, 190, 225, 0.15); border-radius: 10px; background: rgba(5, 10, 18, 0.4); color: var(--text-primary); font: inherit; }
+        .home-data-grid label { color: var(--text-secondary); font-size: 0.78rem; }
+        .home-data-grid label input { display: block; margin-top: 5px; }
+        .home-data-form { display: grid; gap: 9px; margin-top: 12px; }
+        .home-data-form > input, .home-data-form > select, .home-data-form > textarea {
+            width: 100%; min-width: 0; padding: 10px 12px; border: 1px solid rgba(163, 190, 225, 0.15);
+            border-radius: 10px; background: rgba(5, 10, 18, 0.4); color: var(--text-primary); font: inherit;
+        }
+        .home-data-form > textarea { height: auto; min-height: 72px; margin-top: 0; resize: vertical; }
+        .home-data-form > button { width: auto; justify-self: start; padding: 9px 13px; font-size: 0.85rem; }
+        .home-data-form select option { color: #172033; }
+        .home-data-status { min-height: 1.1em; }
+        .recipe-item details { width: 100%; }
+        .recipe-item summary { cursor: pointer; font-weight: 600; }
+        .recipe-item details p { margin-top: 8px; color: var(--text-secondary); font-size: 0.8rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+        .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 12px; }
+        .photo-card { position: relative; min-height: 115px; overflow: hidden; border: 1px solid rgba(163, 190, 225, 0.1); border-radius: 12px; background: rgba(5, 10, 18, 0.34); }
+        .photo-card > a { display: grid; min-height: 115px; color: var(--text-primary); text-decoration: none; }
+        .photo-card img { width: 100%; height: 115px; object-fit: cover; }
+        .photo-album { display: grid; place-items: center; min-height: 115px; color: var(--accent); font-size: 1.5rem; }
+        .photo-caption { padding: 8px; font-size: 0.78rem; overflow-wrap: anywhere; }
+        .photo-card .home-data-delete { position: absolute; top: 5px; right: 5px; padding: 6px 8px; border-radius: 8px; background: rgba(8, 12, 20, 0.8); }
 
         /* FORM CONTROLS */
         .input-group { position: relative; margin-bottom: 20px; }
@@ -742,6 +772,12 @@
         :root[data-theme="light"] .todo-filter,
         :root[data-theme="light"] .todo-input-group input,
         :root[data-theme="light"] textarea { background: rgba(255,255,255,0.78); }
+        :root[data-theme="light"] .home-data-item,
+        :root[data-theme="light"] .photo-card { background: rgba(255,255,255,0.78); border-color: rgba(51, 65, 85, 0.14); }
+        :root[data-theme="light"] .home-data-form > input,
+        :root[data-theme="light"] .home-data-form > select,
+        :root[data-theme="light"] .home-data-form > textarea,
+        :root[data-theme="light"] .home-data-grid input { background: rgba(255,255,255,0.78); border-color: rgba(51, 65, 85, 0.18); }
 
         @media (max-width: 540px) {
             body { padding: 12px; }
@@ -998,6 +1034,75 @@
                 <p class="widget-hint">Afspraken, verjaardagen en deadlines voor vandaag en de komende zes dagen.</p>
                 <ul id="weekOverviewList" class="week-list"></ul>
             </section>
+            <section class="widget-card" data-widget-id="energy" aria-labelledby="energyTitle">
+                <div class="section-title" id="energyTitle"><i class="fa-solid fa-bolt"></i> Energieverbruik</div>
+                <p class="widget-hint">Vul meterstanden in om verbruik tussen opeenvolgende metingen te vergelijken.</p>
+                <form id="energyForm" class="home-data-form">
+                    <label class="settings-label" for="energyReadingDate">Datum</label>
+                    <input id="energyReadingDate" type="date" required>
+                    <div class="home-data-grid">
+                        <label for="electricReading">Stroom (kWh)<input id="electricReading" type="number" min="0" step="0.01" placeholder="Optioneel"></label>
+                        <label for="gasReading">Gas (m³)<input id="gasReading" type="number" min="0" step="0.01" placeholder="Optioneel"></label>
+                    </div>
+                    <button type="submit"><i class="fa-solid fa-plus"></i> Meterstand opslaan</button>
+                </form>
+                <p id="energyStatus" class="widget-hint home-data-status" role="status" aria-live="polite"></p>
+                <ul id="energyList" class="home-data-list"></ul>
+            </section>
+            <section class="widget-card" data-widget-id="recipes" aria-labelledby="recipesTitle">
+                <div class="section-title" id="recipesTitle"><i class="fa-solid fa-book-open"></i> Receptenboek</div>
+                <form id="recipeForm" class="home-data-form">
+                    <input id="recipeName" type="text" maxlength="80" placeholder="Naam van het recept" required>
+                    <textarea id="recipeIngredients" maxlength="3000" placeholder="Ingrediënten" aria-label="Ingrediënten" required></textarea>
+                    <textarea id="recipeInstructions" maxlength="5000" placeholder="Bereiding (optioneel)" aria-label="Bereiding"></textarea>
+                    <button type="submit"><i class="fa-solid fa-plus"></i> Recept bewaren</button>
+                </form>
+                <ul id="recipeList" class="home-data-list"></ul>
+            </section>
+            <section class="widget-card" data-widget-id="waste" aria-labelledby="wasteTitle">
+                <div class="section-title" id="wasteTitle"><i class="fa-solid fa-recycle"></i> Afvalkalender</div>
+                <p class="widget-hint">Voeg de ophaaldatums van je gemeente toe; officiële datums worden niet automatisch opgehaald.</p>
+                <form id="wasteForm" class="home-data-form">
+                    <select id="wasteType" aria-label="Afvalsoort">
+                        <option value="Restafval">Restafval</option>
+                        <option value="GFT">GFT</option>
+                        <option value="Papier">Papier</option>
+                        <option value="PMD">PMD</option>
+                        <option value="Glas">Glas</option>
+                        <option value="Anders">Anders</option>
+                    </select>
+                    <input id="wasteDate" type="date" aria-label="Ophaaldatum" required>
+                    <button type="submit"><i class="fa-solid fa-plus"></i> Ophaaldag toevoegen</button>
+                </form>
+                <p id="wasteStatus" class="widget-hint home-data-status" role="status" aria-live="polite"></p>
+                <ul id="wasteList" class="home-data-list"></ul>
+            </section>
+            <section class="widget-card" data-widget-id="family-calendar" aria-labelledby="familyCalendarTitle">
+                <div class="section-title" id="familyCalendarTitle"><i class="fa-solid fa-people-roof"></i> Familieagenda</div>
+                <p class="widget-hint">Gedeeld met accounts die toegang hebben tot deze website.</p>
+                <form id="familyEventForm" class="home-data-form">
+                    <input id="familyEventTitle" type="text" maxlength="100" placeholder="Wat staat er gepland?" aria-label="Titel van het familiemoment" required>
+                    <input id="familyEventDate" type="date" aria-label="Datum" required>
+                    <input id="familyEventNote" type="text" maxlength="240" placeholder="Tijd of extra informatie (optioneel)" aria-label="Extra informatie">
+                    <button type="submit"><i class="fa-solid fa-plus"></i> Aan agenda toevoegen</button>
+                </form>
+                <p id="familyCalendarStatus" class="widget-hint home-data-status" role="status" aria-live="polite"></p>
+                <ul id="familyEventList" class="home-data-list"></ul>
+            </section>
+            <section class="widget-card" data-widget-id="memories" aria-labelledby="memoriesTitle">
+                <div class="section-title" id="memoriesTitle"><i class="fa-solid fa-images"></i> Fotoherinneringen</div>
+                <p class="widget-hint">Bewaar een afbeeldings- of albumlink. Afbeeldingen blijven bij de oorspronkelijke host.</p>
+                <form id="memoryForm" class="home-data-form">
+                    <input id="memoryCaption" type="text" maxlength="100" placeholder="Bijschrift" aria-label="Bijschrift van de herinnering" required>
+                    <input id="memoryUrl" type="url" maxlength="1000" placeholder="https://... foto of album" aria-label="Link naar foto of album" required>
+                    <select id="memoryType" aria-label="Soort link">
+                        <option value="image">Directe afbeeldingslink</option>
+                        <option value="album">Fotoalbumlink</option>
+                    </select>
+                    <button type="submit"><i class="fa-solid fa-plus"></i> Herinnering toevoegen</button>
+                </form>
+                <div id="memoryGallery" class="photo-grid"></div>
+            </section>
         </div>
         </section>
 
@@ -1092,7 +1197,8 @@
         const dashboardDataKeys = [
             'dashboard_display_name', 'dashboard_theme', 'dashboard_quick_links',
             'dashboard_events', 'dashboard_music_url', 'dashboard_notes',
-            'dashboard_todos', 'dashboard_widget_preferences'
+            'dashboard_todos', 'dashboard_widget_preferences', 'dashboard_energy_readings',
+            'dashboard_recipes', 'dashboard_waste_pickups', 'dashboard_memories'
         ];
         const widgetLabels = {
             'rain-radar': 'Live radar',
@@ -1104,8 +1210,40 @@
             settings: 'Dashboardinstellingen',
             notes: 'Snelnotities',
             todos: 'Actielijst',
-            'week-overview': 'Weekoverzicht'
+            'week-overview': 'Weekoverzicht',
+            energy: 'Energieverbruik',
+            recipes: 'Receptenboek',
+            waste: 'Afvalkalender',
+            'family-calendar': 'Familieagenda',
+            memories: 'Fotoherinneringen'
         };
+        const energyForm = document.getElementById('energyForm');
+        const energyReadingDate = document.getElementById('energyReadingDate');
+        const electricReading = document.getElementById('electricReading');
+        const gasReading = document.getElementById('gasReading');
+        const energyStatus = document.getElementById('energyStatus');
+        const energyList = document.getElementById('energyList');
+        const recipeForm = document.getElementById('recipeForm');
+        const recipeName = document.getElementById('recipeName');
+        const recipeIngredients = document.getElementById('recipeIngredients');
+        const recipeInstructions = document.getElementById('recipeInstructions');
+        const recipeList = document.getElementById('recipeList');
+        const wasteForm = document.getElementById('wasteForm');
+        const wasteType = document.getElementById('wasteType');
+        const wasteDate = document.getElementById('wasteDate');
+        const wasteStatus = document.getElementById('wasteStatus');
+        const wasteList = document.getElementById('wasteList');
+        const familyEventForm = document.getElementById('familyEventForm');
+        const familyEventTitle = document.getElementById('familyEventTitle');
+        const familyEventDate = document.getElementById('familyEventDate');
+        const familyEventNote = document.getElementById('familyEventNote');
+        const familyCalendarStatus = document.getElementById('familyCalendarStatus');
+        const familyEventList = document.getElementById('familyEventList');
+        const memoryForm = document.getElementById('memoryForm');
+        const memoryCaption = document.getElementById('memoryCaption');
+        const memoryUrl = document.getElementById('memoryUrl');
+        const memoryType = document.getElementById('memoryType');
+        const memoryGallery = document.getElementById('memoryGallery');
 
         const dailyQuotes = [
             { text: 'Elke stap vooruit telt, hoe klein ook.', author: 'Een herinnering voor vandaag' },
@@ -1133,11 +1271,13 @@
         let focusInterval = null;
         let cloudSyncTimer = null;
         let cloudRefreshInterval = null;
+        let familyRefreshInterval = null;
         let reminderInterval = null;
         let cloudSyncInProgress = false;
         let cloudSyncPending = false;
         let applyingCloudData = false;
         let lastCloudUpdatedAt = '';
+        let familyEvents = [];
 
         localStorage.removeItem('isAuthenticated');
         sessionStorage.removeItem('isAuthenticated');
@@ -1176,6 +1316,9 @@
         renderFocusTimer();
         renderDailyQuote();
         applySavedTheme();
+        energyReadingDate.value = getLocalDateKey(new Date());
+        wasteDate.value = getLocalDateKey(new Date());
+        familyEventDate.value = getLocalDateKey(new Date());
 
         nameForm.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -1212,6 +1355,26 @@
             e.preventDefault();
             saveMusicLink();
         });
+        energyForm.addEventListener('submit', e => {
+            e.preventDefault();
+            addEnergyReading();
+        });
+        recipeForm.addEventListener('submit', e => {
+            e.preventDefault();
+            addRecipe();
+        });
+        wasteForm.addEventListener('submit', e => {
+            e.preventDefault();
+            addWastePickup();
+        });
+        familyEventForm.addEventListener('submit', e => {
+            e.preventDefault();
+            void addFamilyEvent();
+        });
+        memoryForm.addEventListener('submit', e => {
+            e.preventDefault();
+            addMemory();
+        });
 
         todoFilter.addEventListener('change', renderTodos);
         enableNotificationsButton.addEventListener('click', () => {
@@ -1242,7 +1405,9 @@
                     cloudSyncPending = false;
                     clearTimeout(cloudSyncTimer);
                     clearInterval(cloudRefreshInterval);
+                    clearInterval(familyRefreshInterval);
                     clearInterval(reminderInterval);
+                    familyEvents = [];
                     showLogin();
                 }
             });
@@ -1336,6 +1501,11 @@
                 renderQuickLinks();
                 renderEvents();
                 loadMusicLink();
+                renderEnergyReadings();
+                renderRecipes();
+                renderWastePickups();
+                renderMemories();
+                void loadFamilyEvents();
                 fetchWeather();
                 fetchRainForecast();
                 fetchNews();
@@ -1346,6 +1516,10 @@
                 clearInterval(cloudRefreshInterval);
                 cloudRefreshInterval = setInterval(() => {
                     void refreshCloudDashboard();
+                }, 30000);
+                clearInterval(familyRefreshInterval);
+                familyRefreshInterval = setInterval(() => {
+                    void loadFamilyEvents();
                 }, 30000);
                 checkDashboardReminders();
                 clearInterval(reminderInterval);
@@ -1394,7 +1568,11 @@
                 if (key === 'dashboard_music_url' && !normalizeHttpUrl(value)) {
                     throw new Error('De back-up bevat een ongeldige muzieklink.');
                 }
-                if (['dashboard_quick_links', 'dashboard_events', 'dashboard_todos', 'dashboard_widget_preferences'].includes(key)) {
+                if ([
+                    'dashboard_quick_links', 'dashboard_events', 'dashboard_todos',
+                    'dashboard_widget_preferences', 'dashboard_energy_readings',
+                    'dashboard_recipes', 'dashboard_waste_pickups', 'dashboard_memories'
+                ].includes(key)) {
                     let parsed;
                     try {
                         parsed = JSON.parse(value);
@@ -1418,6 +1596,37 @@
                                 typeof todo.completed !== 'boolean' ||
                                 (todo.dueDate && !isValidDateKey(todo.dueDate))))) {
                         throw new Error('De back-up bevat ongeldige taken.');
+                    }
+                    if (key === 'dashboard_energy_readings' &&
+                        (!Array.isArray(parsed) || parsed.length > 1000 ||
+                            parsed.some(reading => !reading || typeof reading.id !== 'string' || !isValidDateKey(reading.date) ||
+                                ![null, undefined].includes(reading.electricity) && (typeof reading.electricity !== 'number' || !Number.isFinite(reading.electricity) || reading.electricity < 0) ||
+                                ![null, undefined].includes(reading.gas) && (typeof reading.gas !== 'number' || !Number.isFinite(reading.gas) || reading.gas < 0) ||
+                                (reading.electricity == null && reading.gas == null)))) {
+                        throw new Error('De back-up bevat ongeldige meterstanden.');
+                    }
+                    if (key === 'dashboard_recipes' &&
+                        (!Array.isArray(parsed) || parsed.length > 300 ||
+                            parsed.some(recipe => !recipe || typeof recipe.id !== 'string' ||
+                                typeof recipe.name !== 'string' || recipe.name.length > 80 ||
+                                typeof recipe.ingredients !== 'string' || recipe.ingredients.length > 3000 ||
+                                typeof recipe.instructions !== 'string' || recipe.instructions.length > 5000))) {
+                        throw new Error('De back-up bevat ongeldige recepten.');
+                    }
+                    if (key === 'dashboard_waste_pickups' &&
+                        (!Array.isArray(parsed) || parsed.length > 1000 ||
+                            parsed.some(pickup => !pickup || typeof pickup.id !== 'string' ||
+                                typeof pickup.type !== 'string' || pickup.type.length > 40 ||
+                                !isValidDateKey(pickup.date)))) {
+                        throw new Error('De back-up bevat ongeldige afvalophaaldagen.');
+                    }
+                    if (key === 'dashboard_memories' &&
+                        (!Array.isArray(parsed) || parsed.length > 200 ||
+                            parsed.some(memory => !memory || typeof memory.id !== 'string' ||
+                                typeof memory.caption !== 'string' || memory.caption.length > 100 ||
+                                typeof memory.url !== 'string' || memory.url.length > 1000 ||
+                                !normalizeHttpUrl(memory.url) || !['image', 'album'].includes(memory.type)))) {
+                        throw new Error('De back-up bevat ongeldige fotoherinneringen.');
                     }
                     if (key === 'dashboard_widget_preferences' &&
                         (!parsed || typeof parsed !== 'object' || Array.isArray(parsed) ||
@@ -1453,6 +1662,10 @@
             renderEvents();
             renderWeekOverview();
             loadMusicLink();
+            renderEnergyReadings();
+            renderRecipes();
+            renderWastePickups();
+            renderMemories();
             renderWidgetSettings();
             applyWidgetPreferences();
         }
@@ -1866,6 +2079,354 @@
             renderEvents();
         }
 
+        function createHomeDataItem(title, detail, onRemove) {
+            const item = document.createElement('li');
+            item.className = 'home-data-item';
+            const copy = document.createElement('div');
+            copy.className = 'home-data-copy';
+            const heading = document.createElement('strong');
+            heading.textContent = title;
+            const description = document.createElement('span');
+            description.textContent = detail;
+            copy.append(heading, description);
+            item.appendChild(copy);
+            const remove = document.createElement('button');
+            remove.type = 'button';
+            remove.className = 'home-data-delete';
+            remove.setAttribute('aria-label', `Verwijder ${title}`);
+            remove.innerHTML = '<i class="fa-solid fa-trash" aria-hidden="true"></i>';
+            remove.addEventListener('click', onRemove);
+            item.appendChild(remove);
+            return item;
+        }
+
+        function addEnergyReading() {
+            const date = energyReadingDate.value;
+            const electricity = electricReading.value === '' ? null : Number(electricReading.value);
+            const gas = gasReading.value === '' ? null : Number(gasReading.value);
+            if (!isValidDateKey(date) || (electricity === null && gas === null) ||
+                (electricity !== null && (!Number.isFinite(electricity) || electricity < 0)) ||
+                (gas !== null && (!Number.isFinite(gas) || gas < 0)) || date > getLocalDateKey(new Date())) {
+                energyStatus.textContent = 'Vul een geldige datum en minimaal één geldige meterstand in.';
+                return;
+            }
+            const readings = JSON.parse(localStorage.getItem('dashboard_energy_readings') || '[]');
+            if (readings.some(reading => reading.date === date)) {
+                energyStatus.textContent = 'Er bestaat al een meterstand voor deze datum.';
+                return;
+            }
+            readings.push({
+                id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+                date,
+                electricity,
+                gas
+            });
+            localStorage.setItem('dashboard_energy_readings', JSON.stringify(readings));
+            scheduleCloudSync();
+            energyStatus.textContent = 'Meterstand opgeslagen.';
+            electricReading.value = '';
+            gasReading.value = '';
+            renderEnergyReadings();
+        }
+
+        function renderEnergyReadings() {
+            const readings = JSON.parse(localStorage.getItem('dashboard_energy_readings') || '[]')
+                .filter(reading => reading && isValidDateKey(reading.date))
+                .sort((a, b) => b.date.localeCompare(a.date));
+            energyList.replaceChildren();
+            if (!readings.length) {
+                const empty = document.createElement('li');
+                empty.className = 'widget-hint';
+                empty.textContent = 'Nog geen meterstanden opgeslagen.';
+                energyList.appendChild(empty);
+                return;
+            }
+            readings.slice(0, 12).forEach((reading, index) => {
+                const previousReadings = readings.slice(index + 1);
+                const previousElectricity = previousReadings.find(item => item.electricity != null);
+                const previousGas = previousReadings.find(item => item.gas != null);
+                const formatDifference = (current, previous) => {
+                    if (previous == null) return '';
+                    const difference = current - previous;
+                    return difference >= 0
+                        ? ` · +${difference.toFixed(2)} sinds vorige stand`
+                        : ' · Controleer: lager dan vorige stand';
+                };
+                const electricityDetail = reading.electricity == null ? '' :
+                    `Stroom ${reading.electricity} kWh${formatDifference(reading.electricity, previousElectricity?.electricity)}`;
+                const gasDetail = reading.gas == null ? '' :
+                    `Gas ${reading.gas} m³${formatDifference(reading.gas, previousGas?.gas)}`;
+                const detail = [electricityDetail, gasDetail].filter(Boolean).join(' · ');
+                const date = new Date(`${reading.date}T12:00:00`).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short', year: 'numeric' });
+                energyList.appendChild(createHomeDataItem(date, detail, () => {
+                    const current = JSON.parse(localStorage.getItem('dashboard_energy_readings') || '[]');
+                    localStorage.setItem('dashboard_energy_readings', JSON.stringify(current.filter(item => item.id !== reading.id)));
+                    scheduleCloudSync();
+                    renderEnergyReadings();
+                }));
+            });
+        }
+
+        function addRecipe() {
+            const name = recipeName.value.trim();
+            const ingredients = recipeIngredients.value.trim();
+            const instructions = recipeInstructions.value.trim();
+            if (!name || !ingredients) return;
+            const recipes = JSON.parse(localStorage.getItem('dashboard_recipes') || '[]');
+            recipes.unshift({
+                id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+                name,
+                ingredients,
+                instructions
+            });
+            localStorage.setItem('dashboard_recipes', JSON.stringify(recipes));
+            scheduleCloudSync();
+            recipeForm.reset();
+            renderRecipes();
+        }
+
+        function renderRecipes() {
+            const recipes = JSON.parse(localStorage.getItem('dashboard_recipes') || '[]');
+            recipeList.replaceChildren();
+            if (!recipes.length) {
+                const empty = document.createElement('li');
+                empty.className = 'widget-hint';
+                empty.textContent = 'Bewaar hier je favoriete recepten.';
+                recipeList.appendChild(empty);
+                return;
+            }
+            recipes.slice(0, 50).forEach(recipe => {
+                const item = document.createElement('li');
+                item.className = 'home-data-item recipe-item';
+                const details = document.createElement('details');
+                const summary = document.createElement('summary');
+                summary.textContent = recipe.name;
+                const ingredients = document.createElement('p');
+                ingredients.textContent = `Ingrediënten\n${recipe.ingredients}`;
+                details.append(summary, ingredients);
+                if (recipe.instructions) {
+                    const instructions = document.createElement('p');
+                    instructions.textContent = `Bereiding\n${recipe.instructions}`;
+                    details.appendChild(instructions);
+                }
+                item.appendChild(details);
+                const remove = document.createElement('button');
+                remove.type = 'button';
+                remove.className = 'home-data-delete';
+                remove.setAttribute('aria-label', `Verwijder recept ${recipe.name}`);
+                remove.innerHTML = '<i class="fa-solid fa-trash" aria-hidden="true"></i>';
+                remove.addEventListener('click', () => {
+                    const current = JSON.parse(localStorage.getItem('dashboard_recipes') || '[]');
+                    localStorage.setItem('dashboard_recipes', JSON.stringify(current.filter(item => item.id !== recipe.id)));
+                    scheduleCloudSync();
+                    renderRecipes();
+                });
+                item.appendChild(remove);
+                recipeList.appendChild(item);
+            });
+        }
+
+        function addWastePickup() {
+            const date = wasteDate.value;
+            if (!isValidDateKey(date) || date < getLocalDateKey(new Date())) {
+                wasteStatus.textContent = 'Kies een geldige ophaaldatum vanaf vandaag.';
+                return;
+            }
+            const pickups = JSON.parse(localStorage.getItem('dashboard_waste_pickups') || '[]');
+            if (pickups.some(pickup => pickup.date === date && pickup.type === wasteType.value)) {
+                wasteStatus.textContent = 'Deze afvalsoort staat al op die datum ingepland.';
+                return;
+            }
+            pickups.push({
+                id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+                type: wasteType.value,
+                date
+            });
+            localStorage.setItem('dashboard_waste_pickups', JSON.stringify(pickups));
+            scheduleCloudSync();
+            wasteStatus.textContent = 'Ophaaldag opgeslagen.';
+            wasteForm.reset();
+            wasteDate.value = getLocalDateKey(new Date());
+            renderWastePickups();
+            renderWeekOverview();
+        }
+
+        function renderWastePickups() {
+            const today = getLocalDateKey(new Date());
+            const pickups = JSON.parse(localStorage.getItem('dashboard_waste_pickups') || '[]')
+                .filter(pickup => isValidDateKey(pickup.date) && pickup.date >= today)
+                .sort((a, b) => a.date.localeCompare(b.date) || a.type.localeCompare(b.type, 'nl'));
+            wasteList.replaceChildren();
+            if (!pickups.length) {
+                const empty = document.createElement('li');
+                empty.className = 'widget-hint';
+                empty.textContent = 'Nog geen ophaaldagen ingepland.';
+                wasteList.appendChild(empty);
+                return;
+            }
+            pickups.slice(0, 15).forEach(pickup => {
+                const date = new Date(`${pickup.date}T12:00:00`).toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'short' });
+                wasteList.appendChild(createHomeDataItem(pickup.type, date, () => {
+                    const current = JSON.parse(localStorage.getItem('dashboard_waste_pickups') || '[]');
+                    localStorage.setItem('dashboard_waste_pickups', JSON.stringify(current.filter(item => item.id !== pickup.id)));
+                    scheduleCloudSync();
+                    renderWastePickups();
+                    renderWeekOverview();
+                }));
+            });
+        }
+
+        async function loadFamilyEvents() {
+            if (!activeUserId) return;
+            familyCalendarStatus.textContent = 'Gedeelde agenda laden...';
+            try {
+                const { data, error } = await supabaseClient
+                    .from('family_events')
+                    .select('id, title, event_date, details, created_by')
+                    .gte('event_date', getLocalDateKey(new Date()))
+                    .order('event_date')
+                    .limit(50);
+                if (error) throw error;
+                familyEvents = data || [];
+                renderFamilyEvents();
+                renderWeekOverview();
+                familyCalendarStatus.textContent = `${familyEvents.length} gedeelde momenten geladen.`;
+            } catch (error) {
+                familyCalendarStatus.textContent = `Familieagenda laden is niet gelukt: ${error.message}. Voer zo nodig supabase-setup.sql opnieuw uit.`;
+            }
+        }
+
+        function renderFamilyEvents() {
+            familyEventList.replaceChildren();
+            if (!familyEvents.length) {
+                const empty = document.createElement('li');
+                empty.className = 'widget-hint';
+                empty.textContent = 'Nog geen gedeelde momenten ingepland.';
+                familyEventList.appendChild(empty);
+                return;
+            }
+            familyEvents.forEach(event => {
+                const date = new Date(`${event.event_date}T12:00:00`).toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'short' });
+                const detail = [date, event.details].filter(Boolean).join(' · ');
+                familyEventList.appendChild(createHomeDataItem(event.title, detail, () => {
+                    void removeFamilyEvent(event.id);
+                }));
+            });
+        }
+
+        async function addFamilyEvent() {
+            const title = familyEventTitle.value.trim();
+            const eventDate = familyEventDate.value;
+            const details = familyEventNote.value.trim();
+            if (!title || !isValidDateKey(eventDate) || eventDate < getLocalDateKey(new Date())) {
+                familyCalendarStatus.textContent = 'Vul een titel en een geldige datum vanaf vandaag in.';
+                return;
+            }
+            familyCalendarStatus.textContent = 'Moment toevoegen...';
+            try {
+                const { error } = await supabaseClient.from('family_events').insert({
+                    title,
+                    event_date: eventDate,
+                    details: details || null,
+                    created_by: activeUserId
+                });
+                if (error) throw error;
+                familyEventForm.reset();
+                await loadFamilyEvents();
+            } catch (error) {
+                familyCalendarStatus.textContent = `Toevoegen is niet gelukt: ${error.message}`;
+            }
+        }
+
+        async function removeFamilyEvent(id) {
+            familyCalendarStatus.textContent = 'Moment verwijderen...';
+            try {
+                const { error } = await supabaseClient.from('family_events').delete().eq('id', id);
+                if (error) throw error;
+                await loadFamilyEvents();
+            } catch (error) {
+                familyCalendarStatus.textContent = `Verwijderen is niet gelukt: ${error.message}`;
+            }
+        }
+
+        function addMemory() {
+            const caption = memoryCaption.value.trim();
+            const url = normalizeHttpUrl(memoryUrl.value);
+            if (!caption || !url) {
+                memoryUrl.setCustomValidity('Gebruik een geldige http- of https-link.');
+                memoryUrl.reportValidity();
+                memoryUrl.setCustomValidity('');
+                return;
+            }
+            const memories = JSON.parse(localStorage.getItem('dashboard_memories') || '[]');
+            memories.unshift({
+                id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+                caption,
+                url,
+                type: memoryType.value === 'album' ? 'album' : 'image'
+            });
+            localStorage.setItem('dashboard_memories', JSON.stringify(memories));
+            scheduleCloudSync();
+            memoryForm.reset();
+            renderMemories();
+        }
+
+        function renderMemories() {
+            const memories = JSON.parse(localStorage.getItem('dashboard_memories') || '[]');
+            memoryGallery.replaceChildren();
+            memories.slice(0, 30).forEach(memory => {
+                const card = document.createElement('article');
+                card.className = 'photo-card';
+                const link = document.createElement('a');
+                link.href = normalizeHttpUrl(memory.url);
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                if (memory.type === 'image') {
+                    const image = document.createElement('img');
+                    image.src = normalizeHttpUrl(memory.url);
+                    image.alt = memory.caption;
+                    image.loading = 'lazy';
+                    image.referrerPolicy = 'no-referrer';
+                    image.addEventListener('error', () => {
+                        image.replaceWith(Object.assign(document.createElement('div'), {
+                            className: 'photo-album',
+                            textContent: 'Afbeelding niet beschikbaar'
+                        }));
+                    }, { once: true });
+                    link.appendChild(image);
+                } else {
+                    const album = document.createElement('span');
+                    album.className = 'photo-album';
+                    album.innerHTML = '<i class="fa-solid fa-images" aria-hidden="true"></i>';
+                    link.appendChild(album);
+                }
+                const caption = document.createElement('span');
+                caption.className = 'photo-caption';
+                caption.textContent = memory.caption;
+                link.appendChild(caption);
+                card.appendChild(link);
+                const remove = document.createElement('button');
+                remove.type = 'button';
+                remove.className = 'home-data-delete';
+                remove.setAttribute('aria-label', `Verwijder herinnering ${memory.caption}`);
+                remove.innerHTML = '<i class="fa-solid fa-trash" aria-hidden="true"></i>';
+                remove.addEventListener('click', () => {
+                    const current = JSON.parse(localStorage.getItem('dashboard_memories') || '[]');
+                    localStorage.setItem('dashboard_memories', JSON.stringify(current.filter(item => item.id !== memory.id)));
+                    scheduleCloudSync();
+                    renderMemories();
+                });
+                card.appendChild(remove);
+                memoryGallery.appendChild(card);
+            });
+            if (!memories.length) {
+                const empty = document.createElement('p');
+                empty.className = 'widget-hint';
+                empty.textContent = 'Bewaar hier foto- en albumlinks.';
+                memoryGallery.appendChild(empty);
+            }
+        }
+
         function renderWeekOverview() {
             const today = new Date();
             today.setHours(12, 0, 0, 0);
@@ -1879,6 +2440,15 @@
             events.map(getUpcomingEvent).filter(event => event && event.dayDifference < 7).forEach(event => {
                 const day = byDate.get(getLocalDateKey(event.nextDate));
                 if (day) day.items.push(`${event.type === 'birthday' ? 'Verjaardag' : 'Afspraak'}: ${event.name}`);
+            });
+            familyEvents.forEach(event => {
+                const day = byDate.get(event.event_date);
+                if (day) day.items.push(`Familieagenda: ${event.title}`);
+            });
+            const pickups = JSON.parse(localStorage.getItem('dashboard_waste_pickups') || '[]');
+            pickups.forEach(pickup => {
+                const day = byDate.get(pickup.date);
+                if (day) day.items.push(`Afval ophalen: ${pickup.type}`);
             });
             todos.forEach(todo => {
                 if (!todo.completed && /^\d{4}-\d{2}-\d{2}$/.test(todo.dueDate || '')) {
@@ -2070,6 +2640,9 @@
             const events = JSON.parse(localStorage.getItem('dashboard_events') || '[]');
             const dueEvents = events.map(getUpcomingEvent).filter(event => event && event.dayDifference === 0);
             const dueTodos = todos.filter(todo => !todo.completed && todo.dueDate && todo.dueDate <= today);
+            const dueFamilyEvents = familyEvents.filter(event => event.event_date === today);
+            const duePickups = JSON.parse(localStorage.getItem('dashboard_waste_pickups') || '[]')
+                .filter(pickup => pickup.date === today);
             const pending = [
                 ...dueEvents.map(event => ({
                     key: `event:${event.id || `${event.name}:${event.date}`}:${today}`,
@@ -2080,6 +2653,16 @@
                     key: `todo:${index}:${todo.dueDate}:${today}`,
                     title: todo.dueDate < today ? 'Taak is verlopen' : 'Taak heeft vandaag deadline',
                     body: todo.text
+                })),
+                ...dueFamilyEvents.map(event => ({
+                    key: `family:${event.id}:${today}`,
+                    title: 'Familieagenda vandaag',
+                    body: event.title
+                })),
+                ...duePickups.map(pickup => ({
+                    key: `waste:${pickup.id}:${today}`,
+                    title: 'Afval wordt vandaag opgehaald',
+                    body: pickup.type
                 }))
             ];
             let shown;

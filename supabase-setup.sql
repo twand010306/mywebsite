@@ -85,3 +85,80 @@ create policy "Users can update their own dashboard data"
     to authenticated
     using ((select auth.uid()) = user_id)
     with check ((select auth.uid()) = user_id);
+
+create table if not exists public.family_events (
+    id uuid primary key default gen_random_uuid(),
+    title text not null check (length(btrim(title)) between 1 and 100),
+    event_date date not null,
+    details text check (details is null or length(details) <= 240),
+    created_by uuid not null references auth.users(id) on delete cascade,
+    created_at timestamptz not null default now()
+);
+
+create index if not exists family_events_event_date_idx
+    on public.family_events (event_date);
+
+alter table public.family_events enable row level security;
+
+revoke all on public.family_events from anon, public;
+grant select, insert, update, delete on public.family_events to authenticated;
+
+drop policy if exists "Allowed users can read family events" on public.family_events;
+create policy "Allowed users can read family events"
+    on public.family_events
+    for select
+    to authenticated
+    using (
+        exists (
+            select 1
+            from public.allowed_emails
+            where email = lower((select auth.jwt() ->> 'email'))
+        )
+    );
+
+drop policy if exists "Allowed users can add family events" on public.family_events;
+create policy "Allowed users can add family events"
+    on public.family_events
+    for insert
+    to authenticated
+    with check (
+        created_by = (select auth.uid())
+        and exists (
+            select 1
+            from public.allowed_emails
+            where email = lower((select auth.jwt() ->> 'email'))
+        )
+    );
+
+drop policy if exists "Allowed users can update family events" on public.family_events;
+create policy "Allowed users can update family events"
+    on public.family_events
+    for update
+    to authenticated
+    using (
+        exists (
+            select 1
+            from public.allowed_emails
+            where email = lower((select auth.jwt() ->> 'email'))
+        )
+    )
+    with check (
+        exists (
+            select 1
+            from public.allowed_emails
+            where email = lower((select auth.jwt() ->> 'email'))
+        )
+    );
+
+drop policy if exists "Allowed users can delete family events" on public.family_events;
+create policy "Allowed users can delete family events"
+    on public.family_events
+    for delete
+    to authenticated
+    using (
+        exists (
+            select 1
+            from public.allowed_emails
+            where email = lower((select auth.jwt() ->> 'email'))
+        )
+    );
