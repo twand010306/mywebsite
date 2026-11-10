@@ -394,10 +394,31 @@
             color: var(--text-primary); font-size: 0.85rem; outline: none; flex: 1;
         }
         .todo-input-group button { width: auto; padding: 10px 16px; font-size: 0.85rem; }
-        .todo-list { list-style: none; max-height: 90px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+        .todo-list { list-style: none; max-height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
         .todo-item { display: flex; align-items: center; justify-content: space-between; background: rgba(15, 23, 42, 0.5); padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; }
-        .todo-item.completed span { text-decoration: line-through; color: var(--text-secondary); }
+        .todo-item .todo-text { flex: 1; overflow-wrap: anywhere; }
+        .todo-item.completed .todo-text { text-decoration: line-through; color: var(--text-secondary); }
+        .todo-deadline { flex: 0 0 auto; color: var(--text-secondary); font-size: 0.75rem; white-space: nowrap; }
+        .todo-deadline.due-today { color: var(--accent); }
+        .todo-deadline.overdue { color: var(--danger); }
         .todo-delete { background: none; border: none; color: var(--danger); cursor: pointer; width: auto; padding: 0 4px; }
+        .todo-filter { width: 100%; margin: 8px 0; padding: 8px 10px; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 8px; background: rgba(15, 23, 42, 0.5); color: var(--text-primary); font: inherit; }
+        .todo-filter option { color: #172033; }
+        .widget-settings-list { display: grid; gap: 8px; margin-top: 10px; }
+        .widget-settings-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 8px; background: rgba(15, 23, 42, 0.35); font-size: 0.85rem; }
+        .widget-settings-item > span { flex: 1; }
+        .widget-settings-item input { accent-color: var(--accent); }
+        .widget-order-button { width: auto; padding: 6px 9px; box-shadow: none; background: rgba(255, 255, 255, 0.08); }
+        .widget-settings-item button:disabled { opacity: 0.4; cursor: not-allowed; }
+        .utility-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .utility-actions button { width: auto; padding: 9px 12px; box-shadow: none; font-size: 0.85rem; }
+        .utility-actions .secondary-action { background: rgba(255, 255, 255, 0.08); }
+        .sync-status { min-height: 1.2em; }
+        .week-list { display: grid; gap: 8px; margin-top: 12px; list-style: none; }
+        .week-day { padding: 9px 11px; border-radius: 7px; background: rgba(15, 23, 42, 0.45); }
+        .week-day h4 { margin-bottom: 5px; color: var(--accent); font-size: 0.82rem; }
+        .week-day p { color: var(--text-secondary); font-size: 0.8rem; overflow-wrap: anywhere; }
+        .week-day p + p { margin-top: 3px; }
 
         /* FORM CONTROLS */
         .input-group { position: relative; margin-bottom: 20px; }
@@ -434,6 +455,7 @@
         .admin-email-list button:hover { background: var(--danger); color: white; transform: none; }
         .admin-status { color: var(--text-secondary); font-size: 0.85rem; margin-top: 10px; }
         .todo-input-group input[type="email"] { padding: 10px 12px; }
+        .todo-input-group input[type="date"] { min-width: 135px; flex: 0 1 155px; }
         .focus-clock {
             --timer-progress: 100%;
             width: 150px;
@@ -549,7 +571,7 @@
         <!-- Widgets Section -->
         <div class="widgets-grid">
             <!-- Live Buienradar Kaart Widget (Ingesteld op Gaanderen) -->
-            <div class="widget-card">
+            <div class="widget-card" data-widget-id="rain-radar">
                 <div class="section-title" style="margin-bottom: 10px;"><i class="fa-solid fa-map-location-dot"></i> Live Radar (Gaanderen)</div>
                 <div style="width: 100%; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.1);">
                     <iframe src="https://gadgets.buienradar.nl/gadget/zoommap/?lat=51.9288&lng=6.3492&overlaag=2&zoom=9" scrolling="no" width="100%" height="150" frameborder="no"></iframe>
@@ -557,7 +579,7 @@
             </div>
 
             <!-- Buienalarm Neerslaggrafiek Widget -->
-            <div class="widget-card">
+            <div class="widget-card" data-widget-id="rain-forecast">
                 <div class="section-title" style="margin-bottom: 10px;"><i class="fa-solid fa-cloud-showers-heavy"></i> Neerslag Verwachting (2u)</div>
                 <div style="height: 150px; position: relative;">
                     <canvas id="rainChart"></canvas>
@@ -565,7 +587,7 @@
             </div>
 
             <!-- NOS News Ticker Widget -->
-            <div class="widget-card">
+            <div class="widget-card" data-widget-id="news">
                 <div class="section-title" style="margin-bottom: 10px;"><i class="fa-solid fa-rss"></i> NOS Laatste Nieuws</div>
                 <ul id="newsList" class="news-list">
                     <li class="news-item">Nieuwsberichten laden...</li>
@@ -573,7 +595,7 @@
             </div>
 
             <!-- Focus timer -->
-            <section class="widget-card" aria-labelledby="focusTitle">
+            <section class="widget-card" data-widget-id="focus" aria-labelledby="focusTitle">
                 <div class="section-title" id="focusTitle"><i class="fa-solid fa-hourglass-half"></i> Focus Timer</div>
                 <div class="focus-modes" role="group" aria-label="Kies een timer">
                     <button id="focusModeButton" type="button" aria-pressed="true">Focus 25 min</button>
@@ -590,7 +612,7 @@
             </section>
 
             <!-- Aankomende afspraken en verjaardagen -->
-            <section class="widget-card" aria-labelledby="eventsTitle">
+            <section class="widget-card" data-widget-id="events" aria-labelledby="eventsTitle">
                 <div class="section-title" id="eventsTitle"><i class="fa-solid fa-calendar-days"></i> Afspraken & verjaardagen</div>
                 <form id="eventForm" class="dashboard-form">
                     <input id="eventName" type="text" maxlength="60" placeholder="Naam of afspraak" aria-label="Naam of afspraak" required>
@@ -601,12 +623,12 @@
                     </select>
                     <button type="submit"><i class="fa-solid fa-plus"></i> Toevoegen</button>
                 </form>
-                <p class="widget-hint">Verjaardagen worden jaarlijks herhaald. Alleen opgeslagen in deze browser.</p>
+                <p class="widget-hint">Verjaardagen worden jaarlijks herhaald.</p>
                 <ul id="eventList" class="event-list"></ul>
             </section>
 
             <!-- Persoonlijke muzieklink en speler -->
-            <section class="widget-card" aria-labelledby="musicTitle">
+            <section class="widget-card" data-widget-id="music" aria-labelledby="musicTitle">
                 <div class="section-title" id="musicTitle"><i class="fa-solid fa-music"></i> Mijn muziek</div>
                 <form id="musicForm" class="dashboard-form">
                     <input id="musicUrl" type="url" placeholder="Spotify- of YouTube-link" aria-label="Link naar muziek of playlist" required>
@@ -618,7 +640,7 @@
             </section>
 
             <!-- Persoonlijke instellingen -->
-            <section class="widget-card" aria-labelledby="settingsTitle">
+            <section class="widget-card" data-widget-id="settings" aria-labelledby="settingsTitle">
                 <div class="section-title" id="settingsTitle"><i class="fa-solid fa-sliders"></i> Jouw dashboard</div>
                 <div class="settings-grid">
                     <div>
@@ -639,22 +661,50 @@
                         </select>
                     </div>
                 </div>
-                <p id="settingsStatus" class="widget-hint" role="status" aria-live="polite">Je naam en thema worden alleen in deze browser opgeslagen.</p>
+                <p id="settingsStatus" class="widget-hint" role="status" aria-live="polite">Je naam en thema worden lokaal opgeslagen en gesynchroniseerd als Supabase is ingesteld.</p>
+                <div class="section-title" style="margin-top: 18px;"><i class="fa-solid fa-puzzle-piece"></i> Widgets aanpassen</div>
+                <p class="widget-hint">Verberg onderdelen of verander de volgorde.</p>
+                <div id="widgetSettingsList" class="widget-settings-list"></div>
+                <div class="section-title" style="margin-top: 18px;"><i class="fa-solid fa-bell"></i> Herinneringen</div>
+                <p class="widget-hint">Meldingen werken zolang deze website open is. De browser vraagt toestemming.</p>
+                <div class="utility-actions">
+                    <button id="enableNotificationsButton" type="button" class="secondary-action"><i class="fa-solid fa-bell"></i> Meldingen aanzetten</button>
+                </div>
+                <p id="notificationStatus" class="widget-hint" role="status" aria-live="polite"></p>
+                <div class="section-title" style="margin-top: 18px;"><i class="fa-solid fa-box-archive"></i> Back-up</div>
+                <p class="widget-hint">Bewaar je persoonlijke dashboardgegevens als JSON-bestand of herstel ze later.</p>
+                <div class="utility-actions">
+                    <button id="exportDataButton" type="button"><i class="fa-solid fa-download"></i> Back-up downloaden</button>
+                    <button id="importDataButton" type="button" class="secondary-action"><i class="fa-solid fa-upload"></i> Back-up terugzetten</button>
+                    <input id="importDataFile" class="hidden" type="file" accept="application/json,.json">
+                </div>
+                <p id="backupStatus" class="widget-hint" role="status" aria-live="polite"></p>
+                <div class="section-title" style="margin-top: 18px;"><i class="fa-solid fa-cloud-arrow-up"></i> Synchronisatie</div>
+                <p id="syncStatus" class="widget-hint sync-status" role="status" aria-live="polite">Synchronisatie controleren na aanmelden.</p>
             </section>
 
             <!-- Snelnotities -->
-            <div class="widget-card">
+            <div class="widget-card" data-widget-id="notes">
                 <div class="section-title" style="margin-bottom: 0;"><i class="fa-solid fa-note-sticky"></i> Snelnotities (Autosave)</div>
                 <textarea id="notesArea" placeholder="Typ hier je notities..."></textarea>
             </div>
 
             <!-- Actielijst -->
-            <div class="widget-card">
+            <div class="widget-card" data-widget-id="todos">
                 <div class="section-title" style="margin-bottom: 0;"><i class="fa-solid fa-list-check"></i> Actielijst / Taken</div>
                 <div class="todo-input-group">
-                    <input type="text" id="todoInput" placeholder="Nieuwe taak...">
-                    <button id="addTodoBtn"><i class="fa-solid fa-plus"></i></button>
+                    <input type="text" id="todoInput" maxlength="500" placeholder="Nieuwe taak..." aria-label="Nieuwe taak">
+                    <input type="date" id="todoDueDate" aria-label="Deadline (optioneel)">
+                    <button id="addTodoBtn" type="button" aria-label="Taak toevoegen"><i class="fa-solid fa-plus"></i></button>
                 </div>
+                <p class="widget-hint">Stel optioneel een deadline in; taken met de eerstvolgende deadline staan bovenaan.</p>
+                <label class="settings-label" for="todoFilter">Toon taken</label>
+                <select id="todoFilter" class="todo-filter">
+                    <option value="all">Alle taken</option>
+                    <option value="open">Openstaand</option>
+                    <option value="completed">Afgerond</option>
+                    <option value="overdue">Te laat</option>
+                </select>
                 <div class="daily-progress" aria-label="Voortgang van taken van vandaag">
                     <div class="daily-progress-label"><span>Vandaag afgerond</span><span id="todoProgressText">0 / 0</span></div>
                     <div class="daily-progress-track" role="progressbar" aria-label="Taken vandaag afgerond" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
@@ -663,6 +713,11 @@
                 </div>
                 <ul id="todoList" class="todo-list"></ul>
             </div>
+            <section class="widget-card" data-widget-id="week-overview" aria-labelledby="weekOverviewTitle">
+                <div class="section-title" id="weekOverviewTitle"><i class="fa-solid fa-calendar-week"></i> Deze week</div>
+                <p class="widget-hint">Afspraken, verjaardagen en deadlines voor vandaag en de komende zes dagen.</p>
+                <ul id="weekOverviewList" class="week-list"></ul>
+            </section>
         </div>
         </section>
 
@@ -708,6 +763,7 @@
         const clockDisplay = document.getElementById('clockDisplay');
         const notesArea = document.getElementById('notesArea');
         const todoInput = document.getElementById('todoInput');
+        const todoDueDate = document.getElementById('todoDueDate');
         const addTodoBtn = document.getElementById('addTodoBtn');
         const todoList = document.getElementById('todoList');
         const newsList = document.getElementById('newsList');
@@ -743,6 +799,33 @@
         const todoProgressText = document.getElementById('todoProgressText');
         const todoProgressFill = document.getElementById('todoProgressFill');
         const todoProgressTrack = document.querySelector('.daily-progress-track');
+        const todoFilter = document.getElementById('todoFilter');
+        const widgetSettingsList = document.getElementById('widgetSettingsList');
+        const weekOverviewList = document.getElementById('weekOverviewList');
+        const enableNotificationsButton = document.getElementById('enableNotificationsButton');
+        const notificationStatus = document.getElementById('notificationStatus');
+        const exportDataButton = document.getElementById('exportDataButton');
+        const importDataButton = document.getElementById('importDataButton');
+        const importDataFile = document.getElementById('importDataFile');
+        const backupStatus = document.getElementById('backupStatus');
+        const syncStatus = document.getElementById('syncStatus');
+        const dashboardDataKeys = [
+            'dashboard_display_name', 'dashboard_theme', 'dashboard_quick_links',
+            'dashboard_events', 'dashboard_music_url', 'dashboard_notes',
+            'dashboard_todos', 'dashboard_widget_preferences'
+        ];
+        const widgetLabels = {
+            'rain-radar': 'Live radar',
+            'rain-forecast': 'Neerslagverwachting',
+            news: 'NOS-nieuws',
+            focus: 'Focustimer',
+            events: 'Afspraken en verjaardagen',
+            music: 'Mijn muziek',
+            settings: 'Dashboardinstellingen',
+            notes: 'Snelnotities',
+            todos: 'Actielijst',
+            'week-overview': 'Weekoverzicht'
+        };
 
         const dailyQuotes = [
             { text: 'Elke stap vooruit telt, hoe klein ook.', author: 'Een herinnering voor vandaag' },
@@ -768,6 +851,13 @@
         let focusRemaining = focusDuration;
         let focusDeadline = null;
         let focusInterval = null;
+        let cloudSyncTimer = null;
+        let cloudRefreshInterval = null;
+        let reminderInterval = null;
+        let cloudSyncInProgress = false;
+        let cloudSyncPending = false;
+        let applyingCloudData = false;
+        let lastCloudUpdatedAt = '';
 
         localStorage.removeItem('isAuthenticated');
         sessionStorage.removeItem('isAuthenticated');
@@ -815,15 +905,17 @@
                 settingsStatus.textContent = 'Je standaardnaam wordt weer gebruikt.';
             } else {
                 localStorage.setItem('dashboard_display_name', name);
-                settingsStatus.textContent = 'Je naam is opgeslagen in deze browser.';
+                settingsStatus.textContent = 'Je naam is opgeslagen.';
             }
+            scheduleCloudSync();
             updateWelcome();
         });
 
         themeSelect.addEventListener('change', () => {
             applyTheme(themeSelect.value);
             localStorage.setItem('dashboard_theme', themeSelect.value);
-            settingsStatus.textContent = 'Je kleurthema is opgeslagen in deze browser.';
+            scheduleCloudSync();
+            settingsStatus.textContent = 'Je kleurthema is opgeslagen.';
         });
 
         quickLinkForm.addEventListener('submit', function(e) {
@@ -841,12 +933,36 @@
             saveMusicLink();
         });
 
+        todoFilter.addEventListener('change', renderTodos);
+        enableNotificationsButton.addEventListener('click', () => {
+            void enableReminders();
+        });
+        exportDataButton.addEventListener('click', exportDashboardBackup);
+        importDataButton.addEventListener('click', () => importDataFile.click());
+        importDataFile.addEventListener('change', () => {
+            void importDashboardBackup(importDataFile.files?.[0]);
+        });
+        window.addEventListener('focus', () => {
+            void refreshCloudDashboard();
+            checkDashboardReminders();
+        });
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                void refreshCloudDashboard();
+                checkDashboardReminders();
+            }
+        });
+
         supabaseClient.auth.onAuthStateChange((_event, session) => {
             queueMicrotask(() => {
                 if (session?.user) {
                     void authorizeUser(session.user);
                 } else {
                     activeUserId = null;
+                    cloudSyncPending = false;
+                    clearTimeout(cloudSyncTimer);
+                    clearInterval(cloudRefreshInterval);
+                    clearInterval(reminderInterval);
                     showLogin();
                 }
             });
@@ -932,6 +1048,7 @@
                 adminPageButton.classList.toggle('hidden', !isAdmin);
                 adminPage.classList.toggle('hidden', !isAdmin);
                 showPage('dashboard');
+                await syncDashboardData();
                 initializePersonalDashboard(user);
                 startClock();
                 loadNotes();
@@ -942,10 +1059,236 @@
                 fetchWeather();
                 fetchRainForecast();
                 fetchNews();
+                renderWeekOverview();
+                renderWidgetSettings();
+                applyWidgetPreferences();
+                updateNotificationStatus();
+                clearInterval(cloudRefreshInterval);
+                cloudRefreshInterval = setInterval(() => {
+                    void refreshCloudDashboard();
+                }, 30000);
+                checkDashboardReminders();
+                clearInterval(reminderInterval);
+                reminderInterval = setInterval(checkDashboardReminders, 60000);
             } catch (error) {
                 await rejectSignedInUser(`Toegang controleren is niet gelukt: ${error.message}`);
             } finally {
                 checkingUserId = null;
+            }
+        }
+
+        function setSyncStatus(message, isError = false) {
+            syncStatus.textContent = message;
+            syncStatus.style.color = isError ? 'var(--danger)' : '';
+        }
+
+        function getDashboardSnapshot() {
+            return Object.fromEntries(dashboardDataKeys
+                .filter(key => localStorage.getItem(key) !== null)
+                .map(key => [key, localStorage.getItem(key)]));
+        }
+
+        function validateDashboardData(data) {
+            if (!data || typeof data !== 'object' || Array.isArray(data)) {
+                throw new Error('De back-up bevat geen geldige gegevens.');
+            }
+            if (Object.keys(data).some(key => !dashboardDataKeys.includes(key))) {
+                throw new Error('De back-up bevat onbekende dashboardgegevens.');
+            }
+            const result = {};
+            for (const key of dashboardDataKeys) {
+                if (!(key in data)) continue;
+                if (typeof data[key] !== 'string') {
+                    throw new Error(`Ongeldige gegevens voor ${key}.`);
+                }
+                const value = data[key];
+                if (key === 'dashboard_display_name' && value.length > 40) {
+                    throw new Error('De naam in de back-up is te lang.');
+                }
+                if (key === 'dashboard_theme' && !['blue', 'violet', 'emerald', 'rose', 'light'].includes(value)) {
+                    throw new Error('De back-up bevat een onbekend kleurthema.');
+                }
+                if (key === 'dashboard_notes' && value.length > 100000) {
+                    throw new Error('De notities in de back-up zijn te groot.');
+                }
+                if (key === 'dashboard_music_url' && !normalizeHttpUrl(value)) {
+                    throw new Error('De back-up bevat een ongeldige muzieklink.');
+                }
+                if (['dashboard_quick_links', 'dashboard_events', 'dashboard_todos', 'dashboard_widget_preferences'].includes(key)) {
+                    let parsed;
+                    try {
+                        parsed = JSON.parse(value);
+                    } catch {
+                        throw new Error(`Ongeldige JSON-gegevens voor ${key}.`);
+                    }
+                    if (key === 'dashboard_quick_links' &&
+                        (!Array.isArray(parsed) || parsed.length > 100 ||
+                            parsed.some(link => !link || typeof link.title !== 'string' || link.title.length > 40 || !normalizeHttpUrl(link.url)))) {
+                        throw new Error('De back-up bevat ongeldige snelkoppelingen.');
+                    }
+                    if (key === 'dashboard_events' &&
+                        (!Array.isArray(parsed) || parsed.length > 500 ||
+                            parsed.some(event => !event || typeof event.name !== 'string' || event.name.length > 60 ||
+                                !isValidDateKey(event.date) || !['appointment', 'birthday'].includes(event.type)))) {
+                        throw new Error('De back-up bevat ongeldige afspraken.');
+                    }
+                    if (key === 'dashboard_todos' &&
+                        (!Array.isArray(parsed) || parsed.length > 1000 ||
+                            parsed.some(todo => !todo || typeof todo.text !== 'string' || todo.text.length > 500 ||
+                                typeof todo.completed !== 'boolean' ||
+                                (todo.dueDate && !isValidDateKey(todo.dueDate))))) {
+                        throw new Error('De back-up bevat ongeldige taken.');
+                    }
+                    if (key === 'dashboard_widget_preferences' &&
+                        (!parsed || typeof parsed !== 'object' || Array.isArray(parsed) ||
+                            (parsed.order && (!Array.isArray(parsed.order) || parsed.order.some(id => !Object.hasOwn(widgetLabels, id)))) ||
+                            (parsed.hidden && (!Array.isArray(parsed.hidden) || parsed.hidden.some(id => !Object.hasOwn(widgetLabels, id)))))) {
+                        throw new Error('De back-up bevat ongeldige widgetinstellingen.');
+                    }
+                }
+                result[key] = value;
+            }
+            return result;
+        }
+
+        function applyDashboardSnapshot(snapshot) {
+            applyingCloudData = true;
+            try {
+                dashboardDataKeys.forEach(key => localStorage.removeItem(key));
+                Object.entries(snapshot).forEach(([key, value]) => localStorage.setItem(key, value));
+            } finally {
+                applyingCloudData = false;
+            }
+            refreshDashboardWidgets();
+        }
+
+        function refreshDashboardWidgets() {
+            displayName.value = localStorage.getItem('dashboard_display_name') || '';
+            applySavedTheme();
+            updateWelcome();
+            loadNotes();
+            todos = JSON.parse(localStorage.getItem('dashboard_todos') || '[]');
+            renderTodos();
+            renderQuickLinks();
+            renderEvents();
+            renderWeekOverview();
+            loadMusicLink();
+            renderWidgetSettings();
+            applyWidgetPreferences();
+        }
+
+        async function syncDashboardData() {
+            clearTimeout(cloudSyncTimer);
+            lastCloudUpdatedAt = '';
+            setSyncStatus('Persoonlijke gegevens laden uit Supabase...');
+            try {
+                const { data, error } = await supabaseClient
+                    .from('dashboard_data')
+                    .select('data, updated_at')
+                    .eq('user_id', activeUserId)
+                    .maybeSingle();
+                if (error) throw error;
+
+                if (!data) {
+                    const previousOwner = localStorage.getItem('dashboard_local_owner');
+                    const snapshot = previousOwner && previousOwner !== activeUserId
+                        ? {}
+                        : validateDashboardData(getDashboardSnapshot());
+                    const { error: saveError } = await supabaseClient
+                        .from('dashboard_data')
+                        .upsert({ user_id: activeUserId, data: snapshot }, { onConflict: 'user_id' });
+                    if (saveError) throw saveError;
+                    if (previousOwner && previousOwner !== activeUserId) {
+                        applyDashboardSnapshot(snapshot);
+                    }
+                    localStorage.setItem('dashboard_local_owner', activeUserId);
+                    lastCloudUpdatedAt = '';
+                    setSyncStatus(Object.keys(snapshot).length
+                        ? 'Eerste synchronisatie voltooid. Je bestaande browsergegevens zijn gekopieerd.'
+                        : 'Cloudopslag voor dit account is aangemaakt.');
+                    return;
+                }
+
+                const snapshot = validateDashboardData(data.data);
+                lastCloudUpdatedAt = data.updated_at || '';
+                applyDashboardSnapshot(snapshot);
+                localStorage.setItem('dashboard_local_owner', activeUserId);
+                setSyncStatus('Persoonlijke gegevens gesynchroniseerd met Supabase.');
+            } catch (error) {
+                setSyncStatus(`Synchroniseren is niet gelukt: ${error.message}. Voer zo nodig supabase-setup.sql uit in Supabase.`, true);
+            }
+        }
+
+        function scheduleCloudSync() {
+            if (!activeUserId || applyingCloudData) return;
+            clearTimeout(cloudSyncTimer);
+            cloudSyncTimer = setTimeout(() => {
+                void saveDashboardDataToCloud();
+            }, 700);
+        }
+
+        async function saveDashboardDataToCloud() {
+            if (!activeUserId) return;
+            if (cloudSyncInProgress) {
+                cloudSyncPending = true;
+                return;
+            }
+            cloudSyncInProgress = true;
+            const userId = activeUserId;
+            try {
+                const snapshot = validateDashboardData(getDashboardSnapshot());
+                const updatedAt = new Date().toISOString();
+                const { error } = await supabaseClient
+                    .from('dashboard_data')
+                    .upsert({ user_id: userId, data: snapshot, updated_at: updatedAt }, { onConflict: 'user_id' });
+                if (error) throw error;
+                if (activeUserId !== userId) return;
+                localStorage.setItem('dashboard_local_owner', userId);
+                lastCloudUpdatedAt = updatedAt;
+                setSyncStatus(`Gesynchroniseerd om ${new Date(updatedAt).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })}.`);
+            } catch (error) {
+                if (activeUserId === userId) {
+                    setSyncStatus(`Synchroniseren is niet gelukt: ${error.message}`, true);
+                }
+            } finally {
+                cloudSyncInProgress = false;
+                if (activeUserId !== userId) {
+                    cloudSyncPending = false;
+                    return;
+                }
+                if (cloudSyncPending) {
+                    cloudSyncPending = false;
+                    void saveDashboardDataToCloud();
+                }
+            }
+        }
+
+        async function refreshCloudDashboard() {
+            if (!activeUserId || document.hidden || cloudSyncInProgress || cloudSyncPending || cloudSyncTimer) return;
+            const userId = activeUserId;
+            try {
+                const { data, error } = await supabaseClient
+                    .from('dashboard_data')
+                    .select('data, updated_at')
+                    .eq('user_id', userId)
+                    .maybeSingle();
+                if (error) throw error;
+                if (activeUserId !== userId) return;
+                if (data?.updated_at) {
+                    const snapshot = validateDashboardData(data.data);
+                    const localSnapshot = validateDashboardData(getDashboardSnapshot());
+                    const hasChanges = dashboardDataKeys.some(key => (snapshot[key] ?? null) !== (localSnapshot[key] ?? null));
+                    lastCloudUpdatedAt = data.updated_at;
+                    if (hasChanges) {
+                        applyDashboardSnapshot(snapshot);
+                        localStorage.setItem('dashboard_local_owner', userId);
+                        setSyncStatus('Wijzigingen van een ander apparaat zijn gesynchroniseerd.');
+                    }
+                }
+            } catch (error) {
+                if (activeUserId === userId) {
+                    setSyncStatus(`Synchroniseren is niet gelukt: ${error.message}`, true);
+                }
             }
         }
 
@@ -985,6 +1328,7 @@
                 void loadAllowedEmails();
             } else {
                 adminPageButton.removeAttribute('aria-current');
+                void refreshCloudDashboard();
             }
         }
 
@@ -1109,6 +1453,7 @@
             const links = Array.isArray(savedLinks) ? savedLinks : [];
             links.push({ title, url });
             localStorage.setItem('dashboard_quick_links', JSON.stringify(links));
+            scheduleCloudSync();
             quickLinkForm.reset();
             renderQuickLinks();
         }
@@ -1120,6 +1465,7 @@
             if (index !== -1) {
                 links.splice(index, 1);
                 localStorage.setItem('dashboard_quick_links', JSON.stringify(links));
+                scheduleCloudSync();
                 renderQuickLinks();
             }
         }
@@ -1129,6 +1475,13 @@
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const day = String(date.getDate()).padStart(2, '0');
             return `${year}-${month}-${day}`;
+        }
+
+        function isValidDateKey(value) {
+            if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+            const [year, month, day] = value.split('-').map(Number);
+            const date = new Date(year, month - 1, day, 12);
+            return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
         }
 
         function getUpcomingEvent(event) {
@@ -1174,6 +1527,7 @@
                 emptyMessage.className = 'widget-hint';
                 emptyMessage.textContent = 'Nog geen komende momenten toegevoegd.';
                 eventList.appendChild(emptyMessage);
+                renderWeekOverview();
                 return;
             }
 
@@ -1201,6 +1555,7 @@
                 item.append(info, removeButton);
                 eventList.appendChild(item);
             });
+            renderWeekOverview();
         }
 
         function addCalendarEvent() {
@@ -1218,6 +1573,7 @@
                 type: eventType.value === 'birthday' ? 'birthday' : 'appointment'
             });
             localStorage.setItem('dashboard_events', JSON.stringify(events));
+            scheduleCloudSync();
             eventForm.reset();
             renderEvents();
         }
@@ -1226,7 +1582,243 @@
             const savedEvents = JSON.parse(localStorage.getItem('dashboard_events') || '[]');
             const events = Array.isArray(savedEvents) ? savedEvents : [];
             localStorage.setItem('dashboard_events', JSON.stringify(events.filter(event => event.id !== id)));
+            scheduleCloudSync();
             renderEvents();
+        }
+
+        function renderWeekOverview() {
+            const today = new Date();
+            today.setHours(12, 0, 0, 0);
+            const days = Array.from({ length: 7 }, (_, index) => {
+                const date = new Date(today);
+                date.setDate(today.getDate() + index);
+                return { key: getLocalDateKey(date), date, items: [] };
+            });
+            const byDate = new Map(days.map(day => [day.key, day]));
+            const events = JSON.parse(localStorage.getItem('dashboard_events') || '[]');
+            events.map(getUpcomingEvent).filter(event => event && event.dayDifference < 7).forEach(event => {
+                const day = byDate.get(getLocalDateKey(event.nextDate));
+                if (day) day.items.push(`${event.type === 'birthday' ? 'Verjaardag' : 'Afspraak'}: ${event.name}`);
+            });
+            todos.forEach(todo => {
+                if (!todo.completed && /^\d{4}-\d{2}-\d{2}$/.test(todo.dueDate || '')) {
+                    const day = byDate.get(todo.dueDate);
+                    if (day) day.items.push(`Deadline: ${todo.text}`);
+                }
+            });
+
+            weekOverviewList.replaceChildren();
+            days.forEach((day, index) => {
+                const item = document.createElement('li');
+                item.className = 'week-day';
+                const title = document.createElement('h4');
+                title.textContent = index === 0 ? 'Vandaag' :
+                    index === 1 ? 'Morgen' : day.date.toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'short' });
+                item.appendChild(title);
+                const entries = day.items.length ? day.items : ['Geen afspraken of deadlines'];
+                entries.slice(0, 4).forEach(entry => {
+                    const detail = document.createElement('p');
+                    detail.textContent = entry;
+                    item.appendChild(detail);
+                });
+                if (day.items.length > 4) {
+                    const more = document.createElement('p');
+                    more.textContent = `En nog ${day.items.length - 4}...`;
+                    item.appendChild(more);
+                }
+                weekOverviewList.appendChild(item);
+            });
+        }
+
+        function getWidgetPreferences() {
+            try {
+                const stored = JSON.parse(localStorage.getItem('dashboard_widget_preferences') || '{}');
+                const available = [...document.querySelectorAll('.widgets-grid [data-widget-id]')].map(widget => widget.dataset.widgetId);
+                const order = Array.isArray(stored.order) ? stored.order.filter(id => available.includes(id)) : [];
+                const hidden = Array.isArray(stored.hidden) ? stored.hidden.filter(id => available.includes(id)) : [];
+                return {
+                    order: [...new Set([...order, ...available])],
+                    hidden: [...new Set(hidden.filter(id => id !== 'settings'))]
+                };
+            } catch {
+                return {
+                    order: [...document.querySelectorAll('.widgets-grid [data-widget-id]')].map(widget => widget.dataset.widgetId),
+                    hidden: []
+                };
+            }
+        }
+
+        function saveWidgetPreferences(preferences) {
+            localStorage.setItem('dashboard_widget_preferences', JSON.stringify(preferences));
+            scheduleCloudSync();
+            applyWidgetPreferences();
+            renderWidgetSettings();
+        }
+
+        function applyWidgetPreferences() {
+            const preferences = getWidgetPreferences();
+            const container = document.querySelector('.widgets-grid');
+            const widgets = new Map([...container.querySelectorAll('[data-widget-id]')].map(widget => [widget.dataset.widgetId, widget]));
+            preferences.order.forEach(id => {
+                const widget = widgets.get(id);
+                if (!widget) return;
+                container.appendChild(widget);
+                widget.classList.toggle('hidden', preferences.hidden.includes(id));
+            });
+        }
+
+        function renderWidgetSettings() {
+            const preferences = getWidgetPreferences();
+            widgetSettingsList.replaceChildren();
+            preferences.order.forEach((id, index) => {
+                const row = document.createElement('div');
+                row.className = 'widget-settings-item';
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = !preferences.hidden.includes(id);
+                checkbox.disabled = id === 'settings';
+                checkbox.setAttribute('aria-label', `${widgetLabels[id]} tonen`);
+                checkbox.addEventListener('change', () => {
+                    const hidden = new Set(preferences.hidden);
+                    if (checkbox.checked) hidden.delete(id);
+                    else hidden.add(id);
+                    saveWidgetPreferences({ ...preferences, hidden: [...hidden] });
+                });
+                const label = document.createElement('span');
+                label.textContent = widgetLabels[id];
+                row.append(checkbox, label);
+
+                ['up', 'down'].forEach(direction => {
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.className = 'widget-order-button';
+                    button.disabled = direction === 'up' ? index === 0 : index === preferences.order.length - 1;
+                    button.setAttribute('aria-label', `${widgetLabels[id]} ${direction === 'up' ? 'omhoog' : 'omlaag verplaatsen'}`);
+                    button.innerHTML = direction === 'up'
+                        ? '<i class="fa-solid fa-arrow-up" aria-hidden="true"></i>'
+                        : '<i class="fa-solid fa-arrow-down" aria-hidden="true"></i>';
+                    button.addEventListener('click', () => {
+                        const nextOrder = [...preferences.order];
+                        const nextIndex = index + (direction === 'up' ? -1 : 1);
+                        [nextOrder[index], nextOrder[nextIndex]] = [nextOrder[nextIndex], nextOrder[index]];
+                        saveWidgetPreferences({ ...preferences, order: nextOrder });
+                    });
+                    row.appendChild(button);
+                });
+                widgetSettingsList.appendChild(row);
+            });
+        }
+
+        function exportDashboardBackup() {
+            try {
+                const backup = {
+                    format: 'mywebsite-dashboard-backup',
+                    version: 1,
+                    exportedAt: new Date().toISOString(),
+                    data: validateDashboardData(getDashboardSnapshot())
+                };
+                const file = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(file);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `dashboard-backup-${getLocalDateKey(new Date())}.json`;
+                link.click();
+                URL.revokeObjectURL(url);
+                backupStatus.textContent = 'Back-up gedownload.';
+            } catch (error) {
+                backupStatus.textContent = `Back-up maken is niet gelukt: ${error.message}`;
+            }
+        }
+
+        async function importDashboardBackup(file) {
+            if (!file) return;
+            importDataFile.value = '';
+            try {
+                if (file.size > 1024 * 1024) {
+                    throw new Error('Het bestand is groter dan 1 MB.');
+                }
+                const backup = JSON.parse(await file.text());
+                if (backup.format !== 'mywebsite-dashboard-backup' || backup.version !== 1) {
+                    throw new Error('Dit is geen ondersteunde dashboardback-up.');
+                }
+                const snapshot = validateDashboardData(backup.data);
+                if (!window.confirm('Je huidige dashboardgegevens worden vervangen door de gegevens uit deze back-up. Doorgaan?')) {
+                    backupStatus.textContent = 'Herstellen geannuleerd.';
+                    return;
+                }
+                applyDashboardSnapshot(snapshot);
+                scheduleCloudSync();
+                backupStatus.textContent = activeUserId
+                    ? 'Back-up teruggezet en synchronisatie gestart.'
+                    : 'Back-up teruggezet. De gegevens worden na aanmelden gesynchroniseerd.';
+            } catch (error) {
+                backupStatus.textContent = `Back-up terugzetten is niet gelukt: ${error.message}`;
+            }
+        }
+
+        async function enableReminders() {
+            if (!('Notification' in window)) {
+                notificationStatus.textContent = 'Deze browser ondersteunt geen bureaubladmeldingen.';
+                return;
+            }
+            try {
+                const permission = await Notification.requestPermission();
+                updateNotificationStatus();
+                if (permission === 'granted') checkDashboardReminders();
+            } catch (error) {
+                notificationStatus.textContent = `Meldingen inschakelen is niet gelukt: ${error.message}`;
+            }
+        }
+
+        function updateNotificationStatus() {
+            if (!('Notification' in window)) {
+                notificationStatus.textContent = 'Deze browser ondersteunt geen bureaubladmeldingen.';
+                enableNotificationsButton.disabled = true;
+                return;
+            }
+            enableNotificationsButton.disabled = Notification.permission === 'granted';
+            notificationStatus.textContent = Notification.permission === 'granted'
+                ? 'Meldingen staan aan. Ze verschijnen zolang het dashboard open is.'
+                : Notification.permission === 'denied'
+                    ? 'Meldingen zijn geblokkeerd in je browserinstellingen.'
+                    : 'Meldingen staan nog uit.';
+        }
+
+        function checkDashboardReminders() {
+            if (!activeUserId || !('Notification' in window) || Notification.permission !== 'granted') return;
+            const today = getLocalDateKey(new Date());
+            const events = JSON.parse(localStorage.getItem('dashboard_events') || '[]');
+            const dueEvents = events.map(getUpcomingEvent).filter(event => event && event.dayDifference === 0);
+            const dueTodos = todos.filter(todo => !todo.completed && todo.dueDate && todo.dueDate <= today);
+            const pending = [
+                ...dueEvents.map(event => ({
+                    key: `event:${event.id || `${event.name}:${event.date}`}:${today}`,
+                    title: event.type === 'birthday' ? 'Verjaardag vandaag' : 'Afspraak vandaag',
+                    body: event.name
+                })),
+                ...dueTodos.map((todo, index) => ({
+                    key: `todo:${index}:${todo.dueDate}:${today}`,
+                    title: todo.dueDate < today ? 'Taak is verlopen' : 'Taak heeft vandaag deadline',
+                    body: todo.text
+                }))
+            ];
+            let shown;
+            try {
+                shown = new Set(JSON.parse(localStorage.getItem('dashboard_notified_reminders') || '[]'));
+            } catch {
+                shown = new Set();
+            }
+            pending.forEach(reminder => {
+                if (shown.has(reminder.key)) return;
+                try {
+                    const notification = new Notification(reminder.title, { body: reminder.body, tag: reminder.key });
+                    notification.onclick = () => window.focus();
+                    shown.add(reminder.key);
+                } catch (error) {
+                    notificationStatus.textContent = `Een herinnering tonen is niet gelukt: ${error.message}`;
+                }
+            });
+            localStorage.setItem('dashboard_notified_reminders', JSON.stringify([...shown].slice(-200)));
         }
 
         function getMusicEmbedUrl(value) {
@@ -1288,6 +1880,7 @@
                 return;
             }
             localStorage.setItem('dashboard_music_url', normalizedUrl);
+            scheduleCloudSync();
             renderMusicLink(normalizedUrl);
         }
 
@@ -1440,6 +2033,8 @@
                     updateWelcome();
                     renderDailyQuote();
                     renderTodos();
+                    renderWeekOverview();
+                    checkDashboardReminders();
                 }
             }
             updateTime();
@@ -1538,14 +2133,39 @@
 
         // Notities
         function loadNotes() { notesArea.value = localStorage.getItem('dashboard_notes') || ''; }
-        notesArea.addEventListener('input', () => localStorage.setItem('dashboard_notes', notesArea.value));
+        notesArea.addEventListener('input', () => {
+            localStorage.setItem('dashboard_notes', notesArea.value);
+            scheduleCloudSync();
+        });
 
         // Taken
         let todos = JSON.parse(localStorage.getItem('dashboard_todos')) || [];
-        function saveTodos() { localStorage.setItem('dashboard_todos', JSON.stringify(todos)); }
+        function saveTodos() {
+            localStorage.setItem('dashboard_todos', JSON.stringify(todos));
+            scheduleCloudSync();
+        }
         function renderTodos() {
-            todoList.innerHTML = '';
-            todos.forEach((todo, index) => {
+            todoList.replaceChildren();
+            const orderedTodos = [...todos].sort((a, b) => {
+                if (a.completed !== b.completed) {
+                    return Number(a.completed) - Number(b.completed);
+                }
+                if (a.dueDate && b.dueDate) {
+                    return a.dueDate.localeCompare(b.dueDate);
+                }
+                if (a.dueDate) return -1;
+                if (b.dueDate) return 1;
+                return 0;
+            });
+            const today = getLocalDateKey(new Date());
+            const visibleTodos = orderedTodos.filter(todo => {
+                if (todoFilter.value === 'open') return !todo.completed;
+                if (todoFilter.value === 'completed') return todo.completed;
+                if (todoFilter.value === 'overdue') return !todo.completed && todo.dueDate && todo.dueDate < today;
+                return true;
+            });
+            visibleTodos.forEach(todo => {
+                const index = todos.indexOf(todo);
                 const li = document.createElement('li');
                 li.className = `todo-item ${todo.completed ? 'completed' : ''}`;
                 const toggle = document.createElement('input');
@@ -1556,7 +2176,32 @@
                 toggle.addEventListener('change', () => toggleTodo(index));
 
                 const text = document.createElement('span');
+                text.className = 'todo-text';
                 text.textContent = todo.text;
+
+                const dueDate = /^\d{4}-\d{2}-\d{2}$/.test(todo.dueDate || '') ? todo.dueDate : '';
+                const children = [toggle, text];
+                if (dueDate) {
+                    const deadline = document.createElement('span');
+                    deadline.className = 'todo-deadline';
+                    const [year, month, day] = dueDate.split('-').map(Number);
+                    const dueDay = Date.UTC(year, month - 1, day);
+                    const date = new Date(`${dueDate}T12:00:00`);
+                    const todayParts = getLocalDateKey(new Date()).split('-').map(Number);
+                    const daysUntilDue = Math.round((dueDay - Date.UTC(todayParts[0], todayParts[1] - 1, todayParts[2])) / 86400000);
+                    if (date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day) {
+                        deadline.textContent = daysUntilDue < 0
+                            ? `Te laat · ${date.toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' })}`
+                            : daysUntilDue === 0 ? 'Vandaag' : daysUntilDue === 1 ? 'Morgen'
+                                : date.toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' });
+                        if (!todo.completed && daysUntilDue < 0) {
+                            deadline.classList.add('overdue');
+                        } else if (!todo.completed && daysUntilDue === 0) {
+                            deadline.classList.add('due-today');
+                        }
+                        children.push(deadline);
+                    }
+                }
 
                 const removeButton = document.createElement('button');
                 removeButton.type = 'button';
@@ -1565,10 +2210,20 @@
                 removeButton.innerHTML = '<i class="fa-solid fa-trash" aria-hidden="true"></i>';
                 removeButton.addEventListener('click', () => deleteTodo(index));
 
-                li.append(toggle, text, removeButton);
+                children.push(removeButton);
+                li.append(...children);
                 todoList.appendChild(li);
             });
+            if (!visibleTodos.length) {
+                const emptyMessage = document.createElement('li');
+                emptyMessage.className = 'widget-hint';
+                emptyMessage.textContent = todoFilter.value === 'overdue'
+                    ? 'Geen verlopen taken.'
+                    : todoFilter.value === 'completed' ? 'Nog geen taken afgerond.' : 'Geen taken om te tonen.';
+                todoList.appendChild(emptyMessage);
+            }
             renderDailyTodoProgress();
+            renderWeekOverview();
         }
         function renderDailyTodoProgress() {
             const today = getLocalDateKey(new Date());
@@ -1582,10 +2237,18 @@
         function addTodo() {
             const text = todoInput.value.trim();
             if (text) {
-                todos.push({ text, completed: false, createdAt: getLocalDateKey(new Date()) });
+                const dueDate = todoDueDate.value;
+                todos.push({
+                    text,
+                    completed: false,
+                    createdAt: getLocalDateKey(new Date()),
+                    ...(dueDate ? { dueDate } : {})
+                });
                 todoInput.value = '';
+                todoDueDate.value = '';
                 saveTodos();
                 renderTodos();
+                checkDashboardReminders();
             }
         }
         function toggleTodo(index) {
@@ -1593,6 +2256,7 @@
             todos[index].completedAt = todos[index].completed ? getLocalDateKey(new Date()) : null;
             saveTodos();
             renderTodos();
+            checkDashboardReminders();
         }
         function deleteTodo(index) {
             todos.splice(index, 1);

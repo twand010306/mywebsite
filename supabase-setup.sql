@@ -1,4 +1,4 @@
--- Run this script once in the Supabase project's SQL Editor.
+-- Run this script in the Supabase project's SQL Editor to set up or update access and personal-data sync.
 -- The administrator is authenticated by Supabase; never put a service-role key in the website.
 -- Enable Google under Authentication > Providers and add its OAuth client ID and secret.
 -- In Google Cloud, set this as an authorized redirect URI:
@@ -52,3 +52,36 @@ values
     ('admin@enterprise.nl'),
     ('gebruiker@email.nl')
 on conflict (email) do nothing;
+
+create table if not exists public.dashboard_data (
+    user_id uuid primary key references auth.users(id) on delete cascade,
+    data jsonb not null default '{}'::jsonb check (jsonb_typeof(data) = 'object'),
+    updated_at timestamptz not null default now()
+);
+
+alter table public.dashboard_data enable row level security;
+
+revoke all on public.dashboard_data from anon, public;
+grant select, insert, update on public.dashboard_data to authenticated;
+
+drop policy if exists "Users can read their own dashboard data" on public.dashboard_data;
+create policy "Users can read their own dashboard data"
+    on public.dashboard_data
+    for select
+    to authenticated
+    using ((select auth.uid()) = user_id);
+
+drop policy if exists "Users can insert their own dashboard data" on public.dashboard_data;
+create policy "Users can insert their own dashboard data"
+    on public.dashboard_data
+    for insert
+    to authenticated
+    with check ((select auth.uid()) = user_id);
+
+drop policy if exists "Users can update their own dashboard data" on public.dashboard_data;
+create policy "Users can update their own dashboard data"
+    on public.dashboard_data
+    for update
+    to authenticated
+    using ((select auth.uid()) = user_id)
+    with check ((select auth.uid()) = user_id);
